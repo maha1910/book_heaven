@@ -36,6 +36,16 @@ const HomeScreen = ({ navigation }) => {
     setSearchQuery(query);
   };
 
+  const handleAddReview = () => {
+    // Navigate to Add Review screen (or open a modal)
+    navigation.navigate('AddReview');
+  };
+
+  const handleRecommendBooks = () => {
+    // Navigate to Recommend Books screen (or open a modal)
+    navigation.navigate('RecommendBooks');
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContent}>
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Featured')}>
@@ -48,6 +58,14 @@ const HomeScreen = ({ navigation }) => {
 
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('NewArrivals')}>
         <Text style={styles.buttonText}>Go to New Arrivals</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.button} onPress={handleAddReview}>
+        <Text style={styles.buttonText}>Add Review</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.button} onPress={handleRecommendBooks}>
+        <Text style={styles.buttonText}>Recommend Books</Text>
       </TouchableOpacity>
 
       <View style={styles.upcomingReleases}>
