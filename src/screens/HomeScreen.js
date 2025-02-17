@@ -1,109 +1,104 @@
-import React from 'react';
-import { View, Text, TextInput, StyleSheet, ScrollView, Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
+  const [countdown, setCountdown] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showSearch, setShowSearch] = useState(false);
+  const [showFeatured, setShowFeatured] = useState(false);
+  const [showNewArrivals, setShowNewArrivals] = useState(false);
+
+  const releaseDate = new Date('2025-03-15T00:00:00Z');
+
+  const books = [
+    { title: 'Atomic Habits', author: 'James Clear', rating: 4.5 },
+    { title: 'Under the Same Stars', author: 'Jane Harper', rating: 4.2 },
+    { title: 'The Heaven & Earth Grocery Store', author: 'James McBride', rating: 4.8 },
+    { title: 'The Great Adventure', author: 'Mark Twain', rating: 4.0 },
+    { title: 'Learning React', author: 'Alex Banks', rating: 5.0 },
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = new Date();
+      const timeDifference = releaseDate - now;
+      if (timeDifference > 0) {
+        const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+        setCountdown(`${days} days left`);
+      } else {
+        setCountdown('Released!');
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+  };
+
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.sectionHeader}>Featured Books</Text>
-      <View style={styles.featuredBooks}>
-        <Image source={{uri: 'https://placeimg.com/100/150/tech'}} style={styles.bookImage} />
-        <Text>Title: Popular Book</Text>
-        <Text>Author: Author Name</Text>
-        <Text>Rating: 4.5</Text>
-      </View>
+    <ScrollView contentContainerStyle={styles.scrollViewContent}>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Featured')}>
+        <Text style={styles.buttonText}>Go to Featured Books</Text>
+      </TouchableOpacity>
 
-      <Text style={styles.sectionHeader}>Book Search</Text>
-      <TextInput style={styles.searchInput} placeholder="Search books..." />
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Search')}>
+        <Text style={styles.buttonText}>Go to Search</Text>
+      </TouchableOpacity>
 
-      <Text style={styles.sectionHeader}>New Arrivals</Text>
-      <View style={styles.newArrivals}>
-        <Text>New Book Title</Text>
-        <Text>Short description of the book...</Text>
-      </View>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('NewArrivals')}>
+        <Text style={styles.buttonText}>Go to New Arrivals</Text>
+      </TouchableOpacity>
 
-      <Text style={styles.sectionHeader}>Top Reviews</Text>
-      <View style={styles.topReviews}>
-        <Text>User Review: This book is amazing!</Text>
-        <Text>Rating: 5</Text>
-      </View>
-
-      <Text style={styles.sectionHeader}>Recommended for You</Text>
-      <View style={styles.recommendedBooks}>
-        <Text>Book Title: Recommendation</Text>
-        <Text>Author: Recommended Author</Text>
-      </View>
-
-      <Text style={styles.sectionHeader}>Categories</Text>
-      <View style={styles.categories}>
-        <Text>Fiction</Text>
-        <Text>Non-Fiction</Text>
-        <Text>Fantasy</Text>
-      </View>
-
-      <View style={styles.footer}>
-        <Text>Privacy Policy | Terms of Service</Text>
+      <View style={styles.upcomingReleases}>
+        <Text style={styles.bookTitle}>Book: Future of AI</Text>
+        <Text>Author: Dr. Sarah Connor</Text>
+        <Text>Release Date: March 15, 2025</Text>
+        <Text style={styles.countdown}>Countdown: {countdown}</Text>
+        <TouchableOpacity style={styles.notifyButton}>
+          <Text style={styles.notifyText}>Get Notified</Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  scrollViewContent: {
+    flexGrow: 1,
     backgroundColor: '#f0f4f7',
     padding: 20,
   },
-  sectionHeader: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginVertical: 15,
-    color: '#333',
+  button: {
+    backgroundColor: 'blue',
+    padding: 10,
+    marginBottom: 10,
+    borderRadius: 5,
+    alignItems: 'center',
   },
-  featuredBooks: {
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  upcomingReleases: {
     backgroundColor: '#fff',
     padding: 10,
     marginBottom: 20,
+    alignItems: 'center',
   },
-  bookImage: {
-    width: 100,
-    height: 150,
+  countdown: {
+    fontSize: 16,
+    color: 'red',
     marginBottom: 10,
   },
-  searchInput: {
-    width: '100%',
-    height: 40,
-    borderColor: '#ddd',
-    borderWidth: 1,
+  notifyButton: {
+    backgroundColor: 'green',
+    padding: 10,
     borderRadius: 5,
-    marginBottom: 20,
-    paddingLeft: 10,
   },
-  newArrivals: {
-    backgroundColor: '#fff',
-    padding: 10,
-    marginBottom: 20,
-  },
-  topReviews: {
-    backgroundColor: '#fff',
-    padding: 10,
-    marginBottom: 20,
-  },
-  recommendedBooks: {
-    backgroundColor: '#fff',
-    padding: 10,
-    marginBottom: 20,
-  },
-  categories: {
-    backgroundColor: '#fff',
-    padding: 10,
-    marginBottom: 20,
-  },
-  footer: {
-    alignItems: 'center',
-    padding: 10,
-    borderTopWidth: 1,
-    borderTopColor: '#ddd',
-    width: '100%',
+  notifyText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
 });
 
