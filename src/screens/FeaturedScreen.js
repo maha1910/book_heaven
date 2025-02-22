@@ -1,126 +1,136 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { NavigationContainer } from '@react-navigation/native';
-
-import AtomicHabitsDetailsScreen from './AtomicHabitsDetailsScreen';
-import UnderTheSameStarsDetailsScreen from './UnderTheSameStarsDetailsScreen';
-import HeavenDetailsScreen from './HeavenDetailsScreen';
-import LearningReactDetailScreen from './LearningReactDetailScreen';
+import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, FlatList } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 const FeaturedScreen = ({ navigation }) => {
-  // Array of featured books
+  // Array of featured books with real book cover images
   const featuredBooks = [
-    { title: 'Atomic Habits', author: 'James Clear', rating: 4.5, image: 'https://placeimg.com/100/150/tech', id: 1 },
-    { title: 'Under the Same Stars', author: 'Jane Harper', rating: 4.2, image: 'https://placeimg.com/100/150/nature', id: 2 },
-    { title: 'The Heaven & Earth Grocery Store', author: 'James McBride', rating: 4.8, image: 'https://placeimg.com/100/150/animals', id: 3 },
-    { title: 'Learning React', author: 'Alex Banks', rating: 5.0, image: 'https://placeimg.com/100/150/architecture', id: 4 },
+    { 
+      title: 'Atomic Habits', author: 'James Clear', rating: 4.5, 
+      image: 'https://images-na.ssl-images-amazon.com/images/I/81bGKUa1e0L.jpg', 
+      screen: 'AtomicHabitsDetailsScreen', id: 1 
+    },
+    { 
+      title: 'Under the Same Stars', author: 'Jane Harper', rating: 4.2, 
+      image: 'https://images-na.ssl-images-amazon.com/images/I/81Nefqo2-zL.jpg', 
+      screen: 'UnderTheSameStarsDetailsScreen', id: 2 
+    },
+    { 
+      title: 'The Heaven & Earth Grocery Store', author: 'James McBride', rating: 4.8, 
+      image: 'https://images-na.ssl-images-amazon.com/images/I/81Vf7B8J6YL.jpg', 
+      screen: 'HeavenDetailsScreen', id: 3 
+    },
+    { 
+      title: 'Learning React', author: 'Alex Banks', rating: 5.0, 
+      image: 'https://images-na.ssl-images-amazon.com/images/I/91DHuDSZtTL.jpg', 
+      screen: 'LearningReactDetailScreen', id: 4 
+    },
   ];
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollViewContent}>
-      <Text style={styles.header}>Featured Books</Text>
-      {featuredBooks.map((book) => (
-        <View key={book.id} style={styles.bookContainer}>
-          <Image source={{ uri: book.image }} style={styles.bookImage} />
-          <View style={styles.bookDetails}>
-            <Text style={styles.bookTitle}>{book.title}</Text>
-            <Text>Author: {book.author}</Text>
-            <Text>Rating: {book.rating} ⭐</Text>
-            <TouchableOpacity
-              style={styles.detailsButton}
-              onPress={() => {
-                switch (book.id) {
-                  case 1:
-                    navigation.navigate('AtomicHabitsDetailsScreen');
-                    break;
-                  case 2:
-                    navigation.navigate('UnderTheSameStarsDetailsScreen');
-                    break;
-                  case 3:
-                    navigation.navigate('HeavenDetailsScreen');
-                    break;
-                  case 4:
-                    navigation.navigate('LearningReactDetailScreen');
-                    break;
-                  default:
-                    break;
-                }
-              }}
-            >
-              <Text style={styles.buttonText}>View Details</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      ))}
-    </ScrollView>
+    <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        {/* Header */}
+        <Text style={styles.header}>✨ Featured Books 📚</Text>
+
+        {/* Book List */}
+        <FlatList
+          data={featuredBooks}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.bookContainer}>
+              <Image source={{ uri: item.image }} style={styles.bookImage} />
+              <View style={styles.bookDetails}>
+                <Text style={styles.bookTitle}>{item.title}</Text>
+                <Text style={styles.bookAuthor}>by {item.author}</Text>
+                <Text style={styles.bookRating}>⭐ {item.rating}</Text>
+                <TouchableOpacity
+                  style={styles.detailsButton}
+                  onPress={() => navigation.navigate(item.screen)}
+                >
+                  <Ionicons name="book-outline" size={20} color="white" />
+                  <Text style={styles.buttonText}>View Details</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
+          showsVerticalScrollIndicator={false}
+        />
+      </ScrollView>
+    </View>
   );
 };
 
+// Styles
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f2f6fc', // Light background color
+  },
   scrollViewContent: {
-    flexGrow: 1,
-    backgroundColor: '#f0f4f7',
     padding: 20,
   },
   header: {
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#34495E', // Dark text color for header
     marginBottom: 20,
   },
   bookContainer: {
     flexDirection: 'row',
     backgroundColor: '#fff',
-    padding: 10,
+    padding: 15,
     marginBottom: 20,
-    borderRadius: 5,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
+    borderRadius: 12,
+    elevation: 6,
+    shadowColor: '#BDC3C7',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   bookImage: {
     width: 100,
     height: 150,
-    marginRight: 10,
-    borderRadius: 5,
+    borderRadius: 8,
+    marginRight: 15,
   },
   bookDetails: {
+    flex: 1,
     justifyContent: 'center',
   },
   bookTitle: {
+    fontSize: 20,
     fontWeight: 'bold',
-    fontSize: 18,
+    color: '#2C3E50',
+    marginBottom: 8,
+  },
+  bookAuthor: {
+    fontSize: 14,
+    color: '#7F8C8D',
     marginBottom: 5,
   },
+  bookRating: {
+    fontSize: 16,
+    color: '#F39C12', // Golden rating color
+    marginBottom: 12,
+  },
   detailsButton: {
-    backgroundColor: 'blue',
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 10,
+    flexDirection: 'row',
+    backgroundColor: '#2980B9', // Rich blue for buttons
+    paddingVertical: 12,
+    paddingHorizontal: 18,
+    borderRadius: 10,
     alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    transition: 'all 0.3s ease', // Smooth button hover effect
   },
   buttonText: {
     color: 'white',
     fontWeight: 'bold',
+    fontSize: 16,
   },
 });
-
-const Stack = createStackNavigator();
-
-const App = () => {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Featured" component={FeaturedScreen} />
-        <Stack.Screen name="AtomicHabitsDetailsScreen" component={AtomicHabitsDetailsScreen} />
-        <Stack.Screen name="UnderTheSameStarsDetailsScreen" component={UnderTheSameStarsDetailsScreen} />
-        <Stack.Screen name="HeavenDetailsScreen" component={HeavenDetailsScreen} />
-        <Stack.Screen name="LearningReactDetailScreen" component={LearningReactDetailScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
-};
 
 export default FeaturedScreen;
