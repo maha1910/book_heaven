@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
   },
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(240, 248, 255, 0.9)', // Soft Light Blue Overlay
+    backgroundColor: 'rgba(125, 221, 238, 0.9)', // Soft Light Blue Overlay
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,

@@ -1,9 +1,10 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, FlatList } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, FlatList, Image, TouchableOpacity, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
+const { width } = Dimensions.get('window');
+
 const FeaturedScreen = ({ navigation }) => {
-  // Array of featured books with real book cover images
   const featuredBooks = [
     { 
       title: 'Atomic Habits', author: 'James Clear', rating: 4.5, 
@@ -29,34 +30,35 @@ const FeaturedScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollViewContent}>
-        {/* Header */}
-        <Text style={styles.header}>✨ Featured Books 📚</Text>
+      {/* Hero Section */}
+      <ImageBackground source={{ uri: featuredBooks[0].image }} style={styles.hero} blurRadius={8}>
+        <Text style={styles.heroText}>✨ Featured Books 📚</Text>
+      </ImageBackground>
 
-        {/* Book List */}
-        <FlatList
-          data={featuredBooks}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <View style={styles.bookContainer}>
-              <Image source={{ uri: item.image }} style={styles.bookImage} />
-              <View style={styles.bookDetails}>
-                <Text style={styles.bookTitle}>{item.title}</Text>
-                <Text style={styles.bookAuthor}>by {item.author}</Text>
-                <Text style={styles.bookRating}>⭐ {item.rating}</Text>
-                <TouchableOpacity
-                  style={styles.detailsButton}
-                  onPress={() => navigation.navigate(item.screen)}
-                >
-                  <Ionicons name="book-outline" size={20} color="white" />
-                  <Text style={styles.buttonText}>View Details</Text>
-                </TouchableOpacity>
-              </View>
+      {/* Books List */}
+      <FlatList
+        data={featuredBooks}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <View style={styles.card}>
+            <Image source={{ uri: item.image }} style={styles.bookImage} />
+            <View style={styles.bookDetails}>
+              <Text style={styles.bookTitle}>{item.title}</Text>
+              <Text style={styles.bookAuthor}>by {item.author}</Text>
+              <Text style={styles.bookRating}>⭐ {item.rating}</Text>
+              <TouchableOpacity
+                style={styles.detailsButton}
+                onPress={() => navigation.navigate(item.screen)}
+              >
+                <Ionicons name="book-outline" size={20} color="white" />
+                <Text style={styles.buttonText}>View Details</Text>
+              </TouchableOpacity>
             </View>
-          )}
-          showsVerticalScrollIndicator={false}
-        />
-      </ScrollView>
+          </View>
+        )}
+        contentContainerStyle={styles.listContent}
+        showsVerticalScrollIndicator={false}
+      />
     </View>
   );
 };
@@ -65,33 +67,40 @@ const FeaturedScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f2f6fc', // Light background color
+    backgroundColor: '#FFDCB5',
   },
-  scrollViewContent: {
+  hero: {
+    width: '100%',
+    height: 200,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  heroText: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: 'white',
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 1, height: 2 },
+    textShadowRadius: 5,
+  },
+  listContent: {
     padding: 20,
   },
-  header: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: '#34495E', // Dark text color for header
-    marginBottom: 20,
-  },
-  bookContainer: {
+  card: {
     flexDirection: 'row',
     backgroundColor: '#fff',
     padding: 15,
-    marginBottom: 20,
+    marginBottom: 15,
     borderRadius: 12,
-    elevation: 6,
-    shadowColor: '#BDC3C7',
-    shadowOffset: { width: 0, height: 3 },
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
+    elevation: 5,
   },
   bookImage: {
-    width: 100,
-    height: 150,
+    width: 90,
+    height: 130,
     borderRadius: 8,
     marginRight: 15,
   },
@@ -100,10 +109,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   bookTitle: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
-    color: '#2C3E50',
-    marginBottom: 8,
+    color: '#34495E',
   },
   bookAuthor: {
     fontSize: 14,
@@ -112,24 +120,21 @@ const styles = StyleSheet.create({
   },
   bookRating: {
     fontSize: 16,
-    color: '#F39C12', // Golden rating color
-    marginBottom: 12,
+    color: '#F39C12',
+    marginBottom: 10,
   },
   detailsButton: {
     flexDirection: 'row',
-    backgroundColor: '#2980B9', // Rich blue for buttons
-    paddingVertical: 12,
-    paddingHorizontal: 18,
-    borderRadius: 10,
+    backgroundColor: '#2980B9',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 8,
     alignItems: 'center',
-    justifyContent: 'center',
-    gap: 10,
-    transition: 'all 0.3s ease', // Smooth button hover effect
   },
   buttonText: {
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 16,
+    marginLeft: 8,
   },
 });
 
