@@ -1,3 +1,4 @@
+//AddReviewScreen.js
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -59,7 +60,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#f8f9fa', // Light background color
+    backgroundColor: '#87f1c9', // Light background color
   },
   title: {
     fontSize: 26,

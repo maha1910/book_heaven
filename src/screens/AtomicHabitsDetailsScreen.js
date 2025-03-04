@@ -1,12 +1,15 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
 
- 
-
-const AtomicHabitsDetails = () => {
+const AtomicHabitsDetailsScreen = () => {
   return (
     <ScrollView style={styles.container}>
-      <Image source={atomicHabitsCover} style={styles.bookCover} />
+      {/* Use local image if available, otherwise use a remote image */}
+      <Image 
+        source={{ uri: 'https://images-na.ssl-images-amazon.com/images/I/81bGKUa1e0L.jpg' }} 
+        style={styles.bookCover} 
+      />
+      
       <Text style={styles.title}>Atomic Habits: An Easy & Proven Way to Build Good Habits & Break Bad Ones</Text>
       <Text style={styles.author}>Author: James Clear</Text>
       <Text style={styles.year}>Published: 2018</Text>
@@ -21,9 +24,9 @@ const AtomicHabitsDetails = () => {
 
       <Text style={styles.sectionTitle}>Key Takeaways:</Text>
       <Text style={styles.description}>
-        - Small changes, compounded over time, lead to big results.  
-        - Focus on identity-based habits.  
-        - The four-step framework for behavior change: Cue, Craving, Response, Reward.  
+        - Small changes, compounded over time, lead to big results.{"\n"}
+        - Focus on identity-based habits.{"\n"}
+        - The four-step framework for behavior change: Cue, Craving, Response, Reward.{"\n"}
         - Make habits easy, attractive, and satisfying.
       </Text>
 
@@ -41,23 +44,28 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 300,
     resizeMode: 'contain',
+    marginBottom: 10,
   },
   title: {
     fontSize: 22,
     fontWeight: 'bold',
     marginVertical: 10,
+    textAlign: 'center',
   },
   author: {
     fontSize: 18,
     color: 'gray',
+    textAlign: 'center',
   },
   year: {
     fontSize: 16,
     color: 'gray',
+    textAlign: 'center',
   },
   pages: {
     fontSize: 16,
     color: 'gray',
+    textAlign: 'center',
   },
   sectionTitle: {
     fontSize: 18,
@@ -71,4 +79,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AtomicHabitsDetails;
+export default AtomicHabitsDetailsScreen;

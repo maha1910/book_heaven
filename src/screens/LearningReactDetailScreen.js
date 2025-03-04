@@ -1,31 +1,34 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
 
-
-const LearningReactDetails = () => {
+const LearningReactDetailScreen = () => {
   return (
     <ScrollView style={styles.container}>
-      <Image source={learningReactCover} style={styles.bookCover} />
-      <Text style={styles.title}>Learning React: Modern Patterns for Developing React Apps</Text>
-      <Text style={styles.author}>Author: Alex Banks & Eve Porcello</Text>
+      <Image 
+        source={{ uri: 'https://m.media-amazon.com/images/I/51ad7GkEzNL.jpg' }} 
+        style={styles.bookCover} 
+      />
+      
+      <Text style={styles.title}>Learning React</Text>
+      <Text style={styles.author}>Author: Alex Banks</Text>
       <Text style={styles.year}>Published: 2020</Text>
       <Text style={styles.pages}>Pages: 350</Text>
 
       <Text style={styles.sectionTitle}>Summary:</Text>
       <Text style={styles.description}>
-        "Learning React" provides a comprehensive introduction to React, covering fundamental concepts, modern 
-        patterns, and best practices. The book guides readers through building scalable and maintainable React applications.
+        "Learning React" is a hands-on guide to understanding and using React.js for building modern web applications. 
+        The book covers React fundamentals, hooks, state management, and best practices for scalable applications.
       </Text>
 
       <Text style={styles.sectionTitle}>Key Takeaways:</Text>
       <Text style={styles.description}>
-        - Understanding the core concepts of React, including components, state, and props.  
-        - Learning modern React patterns such as Hooks and Context API.  
-        - Managing application state efficiently.  
-        - Building scalable and maintainable applications with React and its ecosystem.
+        - Understand the React component lifecycle{"\n"}
+        - Learn about React Hooks for state and effects{"\n"}
+        - Manage global state efficiently with Context and Redux{"\n"}
+        - Build performant and scalable React apps
       </Text>
 
-      <Text style={styles.sectionTitle}>Rating: ⭐ 4.7/5</Text>
+      <Text style={styles.sectionTitle}>Rating: ⭐ 5.0/5</Text>
     </ScrollView>
   );
 };
@@ -39,23 +42,28 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 300,
     resizeMode: 'contain',
+    marginBottom: 10,
   },
   title: {
     fontSize: 22,
     fontWeight: 'bold',
     marginVertical: 10,
+    textAlign: 'center',
   },
   author: {
     fontSize: 18,
     color: 'gray',
+    textAlign: 'center',
   },
   year: {
     fontSize: 16,
     color: 'gray',
+    textAlign: 'center',
   },
   pages: {
     fontSize: 16,
     color: 'gray',
+    textAlign: 'center',
   },
   sectionTitle: {
     fontSize: 18,
@@ -69,5 +77,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LearningReactDetails;
-
+export default LearningReactDetailScreen;

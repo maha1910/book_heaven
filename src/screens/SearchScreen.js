@@ -1,3 +1,4 @@
+//SearchScreen.js
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 
@@ -82,7 +83,7 @@ const SearchScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   scrollViewContent: {
     flexGrow: 1,
-    backgroundColor: '#f7f7f7',
+    backgroundColor: '#b0eeb1',
     padding: 20,
   },
   searchContainer: {

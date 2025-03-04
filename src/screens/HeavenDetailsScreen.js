@@ -2,8 +2,11 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, Image, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
+const heavenAndEarthCover = require('../../assets/heaven-and-earth-cover.jpg'); // Ensure correct path
 
 const HeavenDetailsScreen = () => {
+  const navigation = useNavigation();
+
   return (
     <ScrollView style={styles.container}>
       <Image source={heavenAndEarthCover} style={styles.bookCover} />
@@ -25,22 +28,18 @@ const HeavenDetailsScreen = () => {
       </Text>
       
       <Text style={styles.sectionTitle}>Rating: ⭐ 4.7/5</Text>
+
+      {/* Back to Home Button */}
+      <View style={styles.buttonContainer}>
+        <Button title="Back to Home" onPress={() => navigation.goBack()} color="#007AFF" />
+      </View>
     </ScrollView>
-  );
-};
-
-const HomeScreen = () => {
-  const navigation = useNavigation();
-
-  return (
-    <View style={styles.homeContainer}>
-      <Button title="View Book Details" onPress={() => navigation.navigate('HeavenDetails')} />
-    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     padding: 15,
     backgroundColor: '#fff',
   },
@@ -48,23 +47,29 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 300,
     resizeMode: 'contain',
+    marginBottom: 15,
   },
   title: {
     fontSize: 22,
     fontWeight: 'bold',
-    marginVertical: 10,
+    marginBottom: 10,
+    textAlign: 'center',
   },
   author: {
     fontSize: 18,
     color: 'gray',
+    textAlign: 'center',
   },
   year: {
     fontSize: 16,
     color: 'gray',
+    textAlign: 'center',
   },
   pages: {
     fontSize: 16,
     color: 'gray',
+    textAlign: 'center',
+    marginBottom: 10,
   },
   sectionTitle: {
     fontSize: 18,
@@ -74,13 +79,12 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 16,
     lineHeight: 22,
-    marginVertical: 5,
+    marginBottom: 5,
   },
-  homeContainer: {
-    flex: 1,
-    justifyContent: 'center',
+  buttonContainer: {
+    marginTop: 20,
     alignItems: 'center',
   },
 });
 
-export default  HeavenDetailsScreen ;
+export default HeavenDetailsScreen;

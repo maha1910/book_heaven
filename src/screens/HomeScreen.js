@@ -1,3 +1,5 @@
+
+//HomeScreen.js
 import React, { useState, useEffect } from 'react';
 import { 
   View, Text, TextInput, StyleSheet, ScrollView, 
@@ -13,14 +15,14 @@ const HomeScreen = ({ navigation }) => {
 
   const books = [
     { title: 'Atomic Habits', author: 'James Clear', rating: 4.5, image: 'https://m.media-amazon.com/images/I/81bGKUa1e0L.jpg' },
-    { title: 'The Heaven & Earth Grocery Store', author: 'James McBride', rating: 4.8, image: 'https://m.media-amazon.com/images/I/81Nefqo2-zL.jpg' },
-    { title: 'Learning React', author: 'Alex Banks', rating: 5.0, image: 'https://m.media-amazon.com/images/I/91DHuDSZtTL.jpg' },
+    { title: 'The Heaven & Earth Grocery Store', author: 'James McBride', rating: 4.8, image: 'https://m.media-amazon.com/images/I/71gLNSLmIxL._SL1500_.jpg' },
+    { title: 'Learning React', author: 'Alex Banks', rating: 5.0, image: 'https://m.media-amazon.com/images/I/51ad7GkEzNL.jpg' },
   ];
 
   const topReviews = [
     { title: 'Atomic Habits', author: 'James Clear', rating: 4.5, review: 'A great read for building better habits.', image: 'https://m.media-amazon.com/images/I/81bGKUa1e0L.jpg' },
-    { title: 'The Heaven & Earth Grocery Store', author: 'James McBride', rating: 4.8, review: 'An extraordinary story of family and survival.', image: 'https://m.media-amazon.com/images/I/81Nefqo2-zL.jpg' },
-    { title: 'Learning React', author: 'Alex Banks', rating: 5.0, review: 'The best book to start learning React!', image: 'https://m.media-amazon.com/images/I/91DHuDSZtTL.jpg' },
+    { title: 'The Heaven & Earth Grocery Store', author: 'James McBride', rating: 4.8, review: 'An extraordinary story of family and survival.', image: 'https://m.media-amazon.com/images/I/71gLNSLmIxL._SL1500_.jpg' },
+    { title: 'Learning React', author: 'Alex Banks', rating: 5.0, review: 'The best book to start learning React!', image: 'https://m.media-amazon.com/images/I/51ad7GkEzNL.jpg' },
   ];
 
   useEffect(() => {
