@@ -1,10 +1,13 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image, Button } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 // Ensure correct image import (use the right path or a URL)
 const underTheSameStarsCover = { uri: 'https://m.media-amazon.com/images/I/81HcIAJnyQL._SL1500_.jpg' };
 
 const UnderTheSameStarsDetails = () => {
+  const navigation = useNavigation(); // Get navigation instance
+
   return (
     <ScrollView style={styles.container}>
       <Image source={underTheSameStarsCover} style={styles.bookCover} />
@@ -30,6 +33,11 @@ const UnderTheSameStarsDetails = () => {
       </Text>
 
       <Text style={styles.sectionTitle}>⭐ Rating: 4.3/5</Text>
+
+      {/* Back to Home Button */}
+      <View style={styles.buttonContainer}>
+        <Button title="Back to Home" onPress={() => navigation.navigate('Home')} color="#007AFF" />
+      </View>
     </ScrollView>
   );
 };
@@ -38,7 +46,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: '#d4a5d2',
   },
   bookCover: {
     width: '100%',
@@ -79,6 +87,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 22,
     color: '#2C3E50',
+  },
+  buttonContainer: {
+    marginTop: 20,
+    marginBottom: 30,
   },
 });
 

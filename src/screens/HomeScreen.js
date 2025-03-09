@@ -1,8 +1,6 @@
-
-//HomeScreen.js
 import React, { useState, useEffect } from 'react';
 import { 
-  View, Text, TextInput, StyleSheet, ScrollView, 
+  View, Text, StyleSheet, ScrollView, 
   TouchableOpacity, Image, FlatList, Animated 
 } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
@@ -10,18 +8,19 @@ import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 const HomeScreen = ({ navigation }) => {
   const [countdown, setCountdown] = useState('');
   const [fadeAnim] = useState(new Animated.Value(0));
+  const [scaleAnim] = useState(new Animated.Value(1)); // Animation for the button
 
   const releaseDate = new Date('2025-03-15T00:00:00Z');
 
   const books = [
     { title: 'Atomic Habits', author: 'James Clear', rating: 4.5, image: 'https://m.media-amazon.com/images/I/81bGKUa1e0L.jpg' },
-    { title: 'The Heaven & Earth Grocery Store', author: 'James McBride', rating: 4.8, image: 'https://m.media-amazon.com/images/I/71gLNSLmIxL._SL1500_.jpg' },
+    { title: 'The Heaven & Earth Grocery Store', author: 'James McBride', rating: 4.8, image: 'https://m.media-amazon.com/images/I/71gLNSLmIxL.SL1500.jpg' },
     { title: 'Learning React', author: 'Alex Banks', rating: 5.0, image: 'https://m.media-amazon.com/images/I/51ad7GkEzNL.jpg' },
   ];
 
   const topReviews = [
     { title: 'Atomic Habits', author: 'James Clear', rating: 4.5, review: 'A great read for building better habits.', image: 'https://m.media-amazon.com/images/I/81bGKUa1e0L.jpg' },
-    { title: 'The Heaven & Earth Grocery Store', author: 'James McBride', rating: 4.8, review: 'An extraordinary story of family and survival.', image: 'https://m.media-amazon.com/images/I/71gLNSLmIxL._SL1500_.jpg' },
+    { title: 'The Heaven & Earth Grocery Store', author: 'James McBride', rating: 4.8, review: 'An extraordinary story of family and survival.', image: 'https://m.media-amazon.com/images/I/71gLNSLmIxL.SL1500.jpg' },
     { title: 'Learning React', author: 'Alex Banks', rating: 5.0, review: 'The best book to start learning React!', image: 'https://m.media-amazon.com/images/I/51ad7GkEzNL.jpg' },
   ];
 
@@ -47,13 +46,47 @@ const HomeScreen = ({ navigation }) => {
     }).start();
   }, []);
 
+  // Bounce animation for the notification button
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(scaleAnim, {
+          toValue: 1.1,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+        Animated.timing(scaleAnim, {
+          toValue: 1,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  }, []);
+
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         {/* Header Section */}
         <Text style={styles.header}>Discover Your Next Favorite Book</Text>
 
-        {/* Featured Books */}
+        {/* Future of AI Section */}
+        <Animated.View style={[styles.upcomingReleases, { opacity: fadeAnim }]}>
+          <Text style={styles.upcomingTitle}>🚀 Upcoming Release</Text>
+          <Text style={styles.bookTitle}>Future of AI</Text>
+          <Text>Author: Dr. Sarah Connor</Text>
+          <Text>Release Date: March 15, 2025</Text>
+          <Text style={styles.countdown}>⏳ {countdown}</Text>
+
+          {/* Animated Notification Button */}
+          <Animated.View style={[styles.notifyButton, { transform: [{ scale: scaleAnim }] }]}>
+            <TouchableOpacity>
+              <Text style={styles.notifyText}>Get Notified</Text>
+            </TouchableOpacity>
+          </Animated.View>
+        </Animated.View>
+
+        {/* Featured Books Section */}
         <Text style={styles.sectionTitle}>📚 Featured Books</Text>
         <FlatList
           horizontal
@@ -70,19 +103,7 @@ const HomeScreen = ({ navigation }) => {
           showsHorizontalScrollIndicator={false}
         />
 
-        {/* Upcoming Releases */}
-        <Animated.View style={[styles.upcomingReleases, { opacity: fadeAnim }]}>
-          <Text style={styles.upcomingTitle}>🚀 Upcoming Release</Text>
-          <Text style={styles.bookTitle}>Future of AI</Text>
-          <Text>Author: Dr. Sarah Connor</Text>
-          <Text>Release Date: March 15, 2025</Text>
-          <Text style={styles.countdown}>⏳ {countdown}</Text>
-          <TouchableOpacity style={styles.notifyButton}>
-            <Text style={styles.notifyText}>Get Notified</Text>
-          </TouchableOpacity>
-        </Animated.View>
-
-        {/* Top Reviews */}
+        {/* Top Reviews Section */}
         <Text style={styles.sectionTitle}>🌟 Top Reviews</Text>
         <FlatList
           horizontal
@@ -115,7 +136,7 @@ const HomeScreen = ({ navigation }) => {
 
         {/* Extra Actions */}
         <TouchableOpacity style={styles.buttonOutline} onPress={() => navigation.navigate('AddReview')}>
-          <Text style={styles.buttonOutlineText}>✍️ Add Review</Text>
+          <Text style={styles.buttonOutlineText}>✍ Add Review</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.buttonOutline} onPress={() => navigation.navigate('RecommendBooks')}>
@@ -132,137 +153,27 @@ const HomeScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFDCB5',
-  },
-  scrollViewContent: {
-    padding: 20,
-  },
-  header: {
-    fontSize: 26,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: '#2C3E50',
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#2980B9',
-  },
-  bookCard: {
-    width: 150,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 10,
-    marginRight: 15,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-    elevation: 5,
-  },
-  bookImage: {
-    width: 100,
-    height: 150,
-    borderRadius: 5,
-    marginBottom: 10,
-  },
-  bookTitle: {
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  bookAuthor: {
-    fontSize: 14,
-    color: '#7F8C8D',
-  },
-  bookRating: {
-    fontSize: 16,
-    color: '#F39C12',
-    marginTop: 5,
-  },
-  bookReview: {
-    fontSize: 12,
-    color: '#7F8C8D',
-    marginTop: 5,
-  },
-  upcomingReleases: {
-    backgroundColor: '#fff',
-    padding: 20,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginVertical: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-    elevation: 5,
-  },
-  upcomingTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  countdown: {
-    fontSize: 16,
-    color: '#E74C3C',
-    marginBottom: 10,
-  },
-  notifyButton: {
-    backgroundColor: '#27AE60',
-    padding: 10,
-    borderRadius: 5,
-  },
-  notifyText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  actionButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  button: {
-    flexDirection: 'row',
-    backgroundColor: '#2980B9',
-    padding: 12,
-    borderRadius: 10,
-    alignItems: 'center',
-    width: '48%',
-    justifyContent: 'center',
-  },
-  buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
-    marginLeft: 8,
-  },
-  buttonOutline: {
-    backgroundColor: 'white',
-    borderWidth: 2,
-    borderColor: '#2980B9',
-    padding: 12,
-    borderRadius: 10,
-    marginTop: 10,
-    alignItems: 'center',
-  },
-  buttonOutlineText: {
-    color: '#2980B9',
-    fontWeight: 'bold',
-  },
-  fab: {
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-    backgroundColor: '#2980B9',
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
-    elevation: 5,
-  },
+  container: { flex: 1, backgroundColor: '#FFDCB5' },
+  scrollViewContent: { padding: 20 },
+  header: { fontSize: 26, fontWeight: 'bold', textAlign: 'center', color: '#2C3E50', marginBottom: 20 },
+  sectionTitle: { fontSize: 20, fontWeight: 'bold', marginBottom: 10, color: '#2980B9' },
+  upcomingReleases: { backgroundColor: '#fff', padding: 15, borderRadius: 10, elevation: 5, marginBottom: 20 },
+  upcomingTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 10 },
+  bookTitle: { fontWeight: 'bold', textAlign: 'center', fontSize: 16 },
+  countdown: { fontSize: 16, color: '#E74C3C', marginTop: 5 },
+  notifyButton: { backgroundColor: '#27AE60', padding: 10, borderRadius: 5, alignItems: 'center', marginTop: 10 },
+  notifyText: { color: 'white', fontWeight: 'bold' },
+  bookCard: { width: 150, backgroundColor: '#fff', borderRadius: 10, padding: 10, marginRight: 15, alignItems: 'center', elevation: 5 },
+  bookImage: { width: 100, height: 150, borderRadius: 5, marginBottom: 10 },
+  bookAuthor: { fontSize: 14, color: '#7F8C8D' },
+  bookRating: { fontSize: 16, color: '#F39C12', marginTop: 5 },
+  bookReview: { fontSize: 14, color: '#7F8C8D', marginTop: 5, textAlign: 'center' },
+  actionButtons: { flexDirection: 'row', justifyContent: 'space-between', marginVertical: 20 },
+  button: { flexDirection: 'row', backgroundColor: '#2980B9', padding: 10, borderRadius: 5, alignItems: 'center', width: '45%' },
+  buttonText: { color: 'white', marginLeft: 10, fontWeight: 'bold' },
+  buttonOutline: { backgroundColor: '#fff', borderColor: '#2980B9', borderWidth: 1, padding: 12, borderRadius: 5, marginVertical: 10, alignItems: 'center' },
+  buttonOutlineText: { color: '#2980B9', fontWeight: 'bold' },
+  fab: { position: 'absolute', bottom: 20, right: 20, backgroundColor: '#2980B9', width: 60, height: 60, borderRadius: 30, alignItems: 'center', justifyContent: 'center' },
 });
 
 export default HomeScreen;

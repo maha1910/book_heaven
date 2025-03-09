@@ -9,6 +9,7 @@ import FeaturedScreen from './src/screens/FeaturedScreen';
 import SearchScreen from './src/screens/SearchScreen';
 import NewArrivalsScreen from './src/screens/NewArrivalsScreen';
 import LoginScreen from './src/screens/LoginScreen';
+import SignupScreen from './src/screens/SignupScreen';
 import AddReviewScreen from './src/screens/AddReviewScreen';
 import RecommendBooksScreen from './src/screens/RecommendBooksScreen';
 import AtomicHabitsDetailsScreen from './src/screens/AtomicHabitsDetailsScreen';
@@ -56,18 +57,17 @@ const App = () => {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login">
         <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Signup" component={SignupScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Home" component={HomeScreen} options={scaleEffect} />
         <Stack.Screen name="Featured" component={FeaturedScreen} options={slideEffect} />
         <Stack.Screen name="Search" component={SearchScreen} options={bounceEffect} />
-        <Stack.Screen name="NewArrivals" component={NewArrivalsScreen} />
-        <Stack.Screen name="AddReview" component={AddReviewScreen} />
-        <Stack.Screen name="RecommendBooks" component={RecommendBooksScreen} />
-
-        {/* 📚 Book Detail Screens */}
-        <Stack.Screen name="AtomicHabitsDetails" component={AtomicHabitsDetailsScreen} />
-        <Stack.Screen name="UnderTheSameStarsDetails" component={UnderTheSameStarsDetailsScreen} />
-        <Stack.Screen name="HeavenDetails" component={HeavenDetailsScreen} />
-        <Stack.Screen name="LearningReactDetailScreen" component={LearningReactDetailScreen} />
+        <Stack.Screen name="NewArrivals" component={NewArrivalsScreen} options={slideEffect} />
+        <Stack.Screen name="AddReview" component={AddReviewScreen} options={scaleEffect} />
+        <Stack.Screen name="RecommendBooks" component={RecommendBooksScreen} options={bounceEffect} />
+        <Stack.Screen name="AtomicHabitsDetails" component={AtomicHabitsDetailsScreen} options={scaleEffect} />
+        <Stack.Screen name="UnderTheSameStarsDetails" component={UnderTheSameStarsDetailsScreen} options={slideEffect} />
+        <Stack.Screen name="HeavenDetails" component={HeavenDetailsScreen} options={bounceEffect} />
+        <Stack.Screen name="LearningReactDetailScreen" component={LearningReactDetailScreen} options={scaleEffect} />
       </Stack.Navigator>
     </NavigationContainer>
   );

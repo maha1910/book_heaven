@@ -1,7 +1,10 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image, Button } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const LearningReactDetailScreen = () => {
+  const navigation = useNavigation();
+
   return (
     <ScrollView style={styles.container}>
       <Image 
@@ -29,6 +32,11 @@ const LearningReactDetailScreen = () => {
       </Text>
 
       <Text style={styles.sectionTitle}>Rating: ⭐ 5.0/5</Text>
+
+      {/* Back to Home Button */}
+      <View style={styles.buttonContainer}>
+        <Button title="Back to Home" onPress={() => navigation.navigate('Home')} color="#007AFF" />
+      </View>
     </ScrollView>
   );
 };
@@ -36,7 +44,7 @@ const LearningReactDetailScreen = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 15,
-    backgroundColor: '#fff',
+    backgroundColor: '#d4a5d2',
   },
   bookCover: {
     width: '100%',
@@ -74,6 +82,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 22,
     marginVertical: 5,
+  },
+  buttonContainer: {
+    marginTop: 20,
+    marginBottom: 30,
   },
 });
 

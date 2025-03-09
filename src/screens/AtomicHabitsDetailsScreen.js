@@ -1,10 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image, Button } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const AtomicHabitsDetailsScreen = () => {
+  const navigation = useNavigation(); // Get navigation instance
+
   return (
     <ScrollView style={styles.container}>
-      {/* Use local image if available, otherwise use a remote image */}
       <Image 
         source={{ uri: 'https://images-na.ssl-images-amazon.com/images/I/81bGKUa1e0L.jpg' }} 
         style={styles.bookCover} 
@@ -18,8 +20,7 @@ const AtomicHabitsDetailsScreen = () => {
       <Text style={styles.sectionTitle}>Summary:</Text>
       <Text style={styles.description}>
         "Atomic Habits" focuses on building good habits, breaking bad ones, and making small, consistent changes
-        that lead to remarkable results over time. The book introduces the concept of the "Four Laws of Behavior Change"
-        to help readers effectively implement habits in their daily lives.
+        that lead to remarkable results over time.
       </Text>
 
       <Text style={styles.sectionTitle}>Key Takeaways:</Text>
@@ -31,6 +32,11 @@ const AtomicHabitsDetailsScreen = () => {
       </Text>
 
       <Text style={styles.sectionTitle}>Rating: ⭐ 4.8/5</Text>
+
+      {/* Back to Home Button */}
+      <View style={styles.buttonContainer}>
+        <Button title="Back to Home" onPress={() => navigation.navigate('Home')} color="#007AFF" />
+      </View>
     </ScrollView>
   );
 };
@@ -38,7 +44,7 @@ const AtomicHabitsDetailsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 15,
-    backgroundColor: '#fff',
+    backgroundColor: '#d4a5d2',
   },
   bookCover: {
     width: '100%',
@@ -76,6 +82,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 22,
     marginVertical: 5,
+  },
+  buttonContainer: {
+    marginTop: 20,
+    marginBottom: 30,
   },
 });
 

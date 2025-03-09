@@ -1,59 +1,44 @@
-//LoginScreen.js
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { 
-  View, Text, TextInput, TouchableOpacity, Alert, 
-  StyleSheet, ImageBackground, Image, Animated 
+  View, Text, TextInput, TouchableOpacity, StyleSheet, 
+  Image, Alert 
 } from 'react-native';
-import { Ionicons, FontAwesome } from '@expo/vector-icons'; // Icons
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons, FontAwesome } from '@expo/vector-icons';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const fadeAnim = useState(new Animated.Value(0))[0]; // Fade-in effect
-  const emailRef = useRef(null);
-  const passwordRef = useRef(null);
 
-  // Handle login validation
   const handleLogin = () => {
-    if (email === '' || password === '') {
-      Alert.alert('Error', 'Please fill in both fields');
+    if (!email || !password) {
+      Alert.alert('Error', 'Please fill in all fields');
       return;
     }
-    navigation.replace('Home'); // Navigate to Home screen
+    navigation.replace('Home');
   };
 
-  // Fade-in animation when screen loads
-  React.useEffect(() => {
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 1000,
-      useNativeDriver: true,
-    }).start();
-  }, []);
-
   return (
-    <ImageBackground 
-      source={{ uri: 'https://source.unsplash.com/1600x900/?open-book,library' }} 
-      style={styles.background}
-    >
-      <View style={styles.overlay}>
-        <Animated.View style={{ opacity: fadeAnim, width: '100%' }}>
+    <LinearGradient colors={['#00C6FF', '#0072FF']} style={styles.container}>
+      <View style={styles.content}>
+        {/* Logo & Branding */}
+        <View style={styles.logoContainer}>
           <Image 
-            source={{ uri: 'https://cdn-icons-png.flaticon.com/512/2232/2232688.png' }} 
+            source={{ uri: 'https://cdn-icons-png.flaticon.com/512/5516/5516842.png' }} 
             style={styles.logo}
           />
-          <Text style={styles.header}>Welcome Back!</Text>
-          <Text style={styles.subHeader}>Discover amazing book reviews</Text>
+          <Text style={styles.appName}>BOOK HEAVEN !</Text>
+        </View>
 
-          <TouchableOpacity
-            activeOpacity={1}
-            style={styles.inputContainer}
-            onPress={() => emailRef.current.focus()}
-          >
-            <Ionicons name="mail-outline" size={24} color="#2C3E50" style={styles.icon} />
+        {/* Login Form */}
+        <View style={styles.loginBox}>
+          <Text style={styles.welcomeText}>Welcome Back!</Text>
+
+          {/* Email Input */}
+          <View style={styles.inputContainer}>
+            <Ionicons name="mail-outline" size={24} color="#5D6D7E" />
             <TextInput
-              ref={emailRef}
               style={styles.input}
               placeholder="Email"
               placeholderTextColor="#5D6D7E"
@@ -61,16 +46,12 @@ const LoginScreen = ({ navigation }) => {
               value={email}
               onChangeText={setEmail}
             />
-          </TouchableOpacity>
+          </View>
 
-          <TouchableOpacity
-            activeOpacity={1}
-            style={styles.inputContainer}
-            onPress={() => passwordRef.current.focus()}
-          >
-            <Ionicons name="lock-closed-outline" size={24} color="#2C3E50" style={styles.icon} />
+          {/* Password Input */}
+          <View style={styles.inputContainer}>
+            <Ionicons name="lock-closed-outline" size={24} color="#5D6D7E" />
             <TextInput
-              ref={passwordRef}
               style={styles.input}
               placeholder="Password"
               placeholderTextColor="#5D6D7E"
@@ -78,74 +59,79 @@ const LoginScreen = ({ navigation }) => {
               value={password}
               onChangeText={setPassword}
             />
-            <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: 15, top: 13 }}>
+            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
               <Ionicons name={showPassword ? "eye-off-outline" : "eye-outline"} size={24} color="#5D6D7E" />
             </TouchableOpacity>
-          </TouchableOpacity>
+          </View>
 
-          <TouchableOpacity style={styles.forgotPassword}>
-            <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-          </TouchableOpacity>
-
+          {/* Login Button */}
           <TouchableOpacity style={styles.button} onPress={handleLogin}>
             <Text style={styles.buttonText}>Login</Text>
           </TouchableOpacity>
 
-          <Text style={styles.orText}>Or continue with</Text>
-
+          {/* Social Media Login */}
+          <Text style={styles.orText}>Or sign in with</Text>
           <View style={styles.socialButtons}>
             <TouchableOpacity style={styles.socialButton}>
-              <FontAwesome name="google" size={24} color="#DB4437" style={{ marginRight: 10 }} />
-              <Text style={{ color: '#DB4437', fontWeight: 'bold' }}>Google</Text>
+              <FontAwesome name="google" size={24} color="#DB4437" style={styles.socialIcon} />
+              <Text style={[styles.socialText, { color: '#DB4437' }]}>Google</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.socialButton}>
-              <FontAwesome name="facebook" size={24} color="#4267B2" style={{ marginRight: 10 }} />
-              <Text style={{ color: '#4267B2', fontWeight: 'bold' }}>Facebook</Text>
+              <FontAwesome name="facebook" size={24} color="#4267B2" style={styles.socialIcon} />
+              <Text style={[styles.socialText, { color: '#4267B2' }]}>Facebook</Text>
             </TouchableOpacity>
           </View>
 
+          {/* Signup Link */}
           <View style={styles.signupContainer}>
             <Text style={styles.signupText}>New here?</Text>
             <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
               <Text style={styles.signupLink}> Create an Account</Text>
             </TouchableOpacity>
           </View>
-        </Animated.View>
+        </View>
       </View>
-    </ImageBackground>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
-  background: {
+  container: {
     flex: 1,
-    resizeMode: 'cover',
   },
-  overlay: {
+  content: {
     flex: 1,
-    backgroundColor: 'rgba(125, 221, 238, 0.9)',
-    alignItems: 'center',
     justifyContent: 'center',
-    padding: 20,
+    alignItems: 'center',
+    paddingHorizontal: 20,
+  },
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
   },
   logo: {
     width: 120,
     height: 120,
-    marginBottom: 20,
   },
-  header: {
-    fontSize: 30,
+  appName: {
+    fontSize: 22,
     fontWeight: 'bold',
-    color: '#2C3E50',
-    textAlign: 'center',
-    marginBottom: 10,
+    color: '#fff',
+    marginTop: 5,
   },
-  subHeader: {
-    fontSize: 16,
-    color: '#5D6D7E',
-    marginBottom: 20,
-    textAlign: 'center',
+  loginBox: {
+    backgroundColor: '#fff',
+    width: '100%',
+    padding: 20,
+    borderRadius: 15,
+    alignItems: 'center',
+    elevation: 5,
+  },
+  welcomeText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 15,
   },
   inputContainer: {
     flexDirection: 'row',
@@ -158,21 +144,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     borderWidth: 1,
     borderColor: '#BDC3C7',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 3,
+  },
+  input: {
+    flex: 1,
+    height: 50,
+    marginLeft: 10,
   },
   button: {
-    backgroundColor: '#2980B9',
+    backgroundColor: '#0072FF',
     width: '100%',
     height: 50,
     borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 10,
-    elevation: 5,
+    elevation: 3,
   },
   buttonText: {
     color: '#fff',
@@ -198,6 +184,24 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: 5,
     justifyContent: 'center',
+  },
+  socialIcon: {
+    marginRight: 10,
+  },
+  socialText: {
+    fontWeight: 'bold',
+  },
+  signupContainer: {
+    flexDirection: 'row',
+    marginTop: 20,
+    justifyContent: 'center',
+  },
+  signupText: {
+    color: '#5D6D7E',
+  },
+  signupLink: {
+    color: '#2980B9',
+    fontWeight: 'bold',
   },
 });
 

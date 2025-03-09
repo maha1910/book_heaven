@@ -31,7 +31,7 @@ const HeavenDetailsScreen = () => {
 
       {/* Back to Home Button */}
       <View style={styles.buttonContainer}>
-        <Button title="Back to Home" onPress={() => navigation.goBack()} color="#007AFF" />
+        <Button title="Back to Home" onPress={() => navigation.navigate('Home')} color="#007AFF" />
       </View>
     </ScrollView>
   );
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 15,
-    backgroundColor: '#fff',
+    backgroundColor: '#d4a5d2',
   },
   bookCover: {
     width: '100%',
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginTop: 20,
-    alignItems: 'center',
+    marginBottom: 30,
   },
 });
 

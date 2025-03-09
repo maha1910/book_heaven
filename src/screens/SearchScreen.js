@@ -1,18 +1,18 @@
-//SearchScreen.js
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import Animated, { FadeIn, FadeOut, BounceIn, BounceOut } from 'react-native-reanimated';
 
 const SearchScreen = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredBooks, setFilteredBooks] = useState([]);
-  const [loading, setLoading] = useState(false); // Loading state
+  const [loading, setLoading] = useState(false);
 
   const books = [
-    { title: 'Atomic Habits', author: 'James Clear', rating: 4.5 },
-    { title: 'Under the Same Stars', author: 'Jane Harper', rating: 4.2 },
-    { title: 'The Heaven & Earth Grocery Store', author: 'James McBride', rating: 4.8 },
-    { title: 'The Great Adventure', author: 'Mark Twain', rating: 4.0 },
-    { title: 'Learning React', author: 'Alex Banks', rating: 5.0 },
+    { title: 'Atomic Habits', author: 'James Clear', rating: 4.5, description: 'A guide to building good habits and breaking bad ones.' },
+    { title: 'Under the Same Stars', author: 'Jane Harper', rating: 4.2, description: 'A thrilling mystery novel set in the Australian outback.' },
+    { title: 'The Heaven & Earth Grocery Store', author: 'James McBride', rating: 4.8, description: 'A deeply moving novel about community and resilience.' },
+    { title: 'The Great Adventure', author: 'Mark Twain', rating: 4.0, description: 'An exciting tale of exploration and discovery.' },
+    { title: 'Learning React', author: 'Alex Banks', rating: 5.0, description: 'A comprehensive guide to mastering React development.' },
   ];
 
   const handleSearch = (query) => {
@@ -41,7 +41,7 @@ const SearchScreen = ({ navigation }) => {
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContent}>
       {/* Search Input */}
-      <View style={styles.searchContainer}>
+      <Animated.View style={styles.searchContainer} entering={BounceIn} exiting={BounceOut}>
         <TextInput
           style={styles.searchInput}
           placeholder="Search books..."
@@ -53,28 +53,31 @@ const SearchScreen = ({ navigation }) => {
             <Text style={styles.clearButtonText}>Clear</Text>
           </TouchableOpacity>
         )}
-      </View>
+      </Animated.View>
 
       {/* Loading Indicator */}
-      {loading && (
-        <ActivityIndicator size="large" color="#27ae60" style={styles.loader} />
-      )}
+      {loading && <ActivityIndicator size="large" color="#27ae60" style={styles.loader} />}
 
       {/* Search Results */}
       {!loading && searchQuery.length > 0 && (
-        <View style={styles.searchResults}>
+        <Animated.View style={styles.searchResults} entering={FadeIn} exiting={FadeOut}>
           {filteredBooks.length > 0 ? (
             filteredBooks.map((book, index) => (
-              <View key={index} style={styles.searchResultItem}>
+              <TouchableOpacity 
+                key={index} 
+                style={styles.searchResultItem} 
+                entering={FadeIn} 
+                onPress={() => navigation.navigate('BookDetails', { book })}
+              >
                 <Text style={styles.searchResultTitle}>{book.title}</Text>
                 <Text>Author: {book.author}</Text>
                 <Text>Rating: {book.rating} ⭐</Text>
-              </View>
+              </TouchableOpacity>
             ))
           ) : (
             <Text style={styles.noResults}>No books found.</Text>
           )}
-        </View>
+        </Animated.View>
       )}
     </ScrollView>
   );
