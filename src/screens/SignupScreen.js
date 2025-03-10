@@ -35,8 +35,8 @@ const SignupScreen = ({ navigation }) => {
       <View style={styles.content}>
         {/* Logo & Branding */}
         <View style={styles.logoContainer}>
-          <Image source={{ uri: 'https://cdn-icons-png.flaticon.com/512/1085/1085763.png' }} style={styles.logo} />
-          <Text style={styles.appName}>Name.App</Text>
+          <Image source={{ uri: 'https://cdn-icons-png.flaticon.com/512/5516/5516842.png' }} style={styles.logo} />
+          <Text style={styles.appName}>BOOK HEAVEN !</Text>
         </View>
 
         {/* Signup Form */}
@@ -131,8 +131,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   logo: {
-    width: 80,
-    height: 80,
+    width: 130,
+    height: 130,
   },
   appName: {
     fontSize: 22,
