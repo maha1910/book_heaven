@@ -5,17 +5,38 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
+import { supabase } from '../../supabaseConfig';  // Import Supabase client
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert('Error', 'Please fill in all fields');
       return;
     }
+
+    // Sign in using Supabase Auth
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+    if (error) {
+      Alert.alert('Login Failed', error.message);
+      return;
+    }
+
+    if (!data.user) {
+      Alert.alert('Error', 'User not found. Please sign up.');
+      return;
+    }
+
+    if (!data.user.confirmed_at) {
+      Alert.alert('Error', 'Please verify your email before logging in.');
+      return;
+    }
+
+    Alert.alert('Success', 'Logged in successfully!');
     navigation.replace('Home');
   };
 
@@ -164,10 +185,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
-  },
-  orText: {
-    marginTop: 20,
-    color: '#5D6D7E',
   },
   socialButtons: {
     flexDirection: 'row',

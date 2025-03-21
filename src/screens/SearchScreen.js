@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import Animated, { FadeIn, FadeOut, BounceIn, BounceOut } from 'react-native-reanimated';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const SearchScreen = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -39,6 +40,12 @@ const SearchScreen = ({ navigation }) => {
   };
 
   return (
+    <LinearGradient 
+              colors={['#DAFF7D', '#B2EE9B']} // Purple to Blue gradient
+              start={{ x: 0.5, y: 0 }}  
+              end={{ x: 0.5, y: 0.6 }}  
+              style={styles.gradient}
+            >
     <ScrollView contentContainerStyle={styles.scrollViewContent}>
       {/* Search Input */}
       <Animated.View style={styles.searchContainer} entering={BounceIn} exiting={BounceOut}>
@@ -80,14 +87,17 @@ const SearchScreen = ({ navigation }) => {
         </Animated.View>
       )}
     </ScrollView>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
   scrollViewContent: {
     flexGrow: 1,
-    backgroundColor: '#b0eeb1',
     padding: 20,
+  },
+  gradient: {
+    flex: 1,
   },
   searchContainer: {
     flexDirection: 'row',

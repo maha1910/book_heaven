@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const { width, height } = Dimensions.get('window');
 
@@ -54,7 +55,6 @@ const AddReviewScreen = ({ navigation }) => {
       }).start();
     });
 
-    // Trigger star shower
     let newStars = Array.from({ length: 10 }, () => ({
       id: Math.random().toString(),
       animatedValue: new Animated.Value(0),
@@ -89,108 +89,117 @@ const AddReviewScreen = ({ navigation }) => {
   };
 
   return (
-    <Animated.View style={[styles.container, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
-      <Text style={styles.title}>Drop Your Thoughts!</Text>
+    <LinearGradient 
+      colors={['#006B38FF', '#101820FF']}
+      start={{ x: 0.5, y: 0 }} 
+      end={{ x: 0.5, y: 0.7 }}  
+      style={styles.gradient}
+    >
+      <Animated.View style={[styles.container, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
+        <Text style={styles.title}>Drop Your Thoughts!</Text>
 
-      <Text style={styles.label}>📚 Select Your Book:</Text>
-      <View style={styles.pickerWrapper}>
-        <Picker
-          selectedValue={selectedBook}
-          onValueChange={(itemValue) => setSelectedBook(itemValue)}
-          style={styles.picker}
-          dropdownIconColor="#3498db"
-          mode="dropdown"
-        >
-          <Picker.Item label="Pick your masterpiece" value="" color="#888" />
-          <Picker.Item label="📘 Atomic Habits - James Clear" value="Atomic Habits" />
-          <Picker.Item label="📗 Under the Same Stars - Jane Harper" value="Under the Same Stars" />
-          <Picker.Item label="📙 The Heaven & Earth Grocery Store - James McBride" value="The Heaven & Earth Grocery Store" />
-          <Picker.Item label="📕 Learning React - Alex Banks" value="Learning React" />
-        </Picker>
-      </View>
+        <Text style={styles.label}>📚 Select Your Book:</Text>
+        <View style={styles.pickerWrapper}>
+          <Picker
+            selectedValue={selectedBook}
+            onValueChange={(itemValue) => setSelectedBook(itemValue)}
+            style={styles.picker}
+            dropdownIconColor="#F5F5DC"
+            mode="dropdown"
+          >
+            <Picker.Item label="Pick your masterpiece" value="" color="#C0C0C0" />
+            <Picker.Item label="📘 Atomic Habits - James Clear" value="Atomic Habits" />
+            <Picker.Item label="📗 Under the Same Stars - Jane Harper" value="Under the Same Stars" />
+            <Picker.Item label="📙 The Heaven & Earth Grocery Store - James McBride" value="The Heaven & Earth Grocery Store" />
+            <Picker.Item label="📕 Learning React - Alex Banks" value="Learning React" />
+            <Picker.Item label="📓 The Meadowbrook Murders - Jessica Goodman" value="The Meadowbrook Murders" />
+          </Picker>
+        </View>
 
-      <Text style={styles.label}>⭐ Rate it (1-5):</Text>
-      <View style={styles.ratingContainer}>
-        {[1, 2, 3, 4, 5].map((star) => (
-          <TouchableOpacity key={star} onPress={() => handleRating(star)}>
-            <Animated.View style={{ transform: [{ scale: star === rating ? scaleAnim : 1 }] }}>
-              <Ionicons
-                name={star <= rating ? 'star' : 'star-outline'}
-                size={36}
-                color={star <= rating ? '#FFBF00' : '#808080'}
-                style={styles.star}
-              />
-            </Animated.View>
-          </TouchableOpacity>
+        <Text style={styles.label}>⭐ Rate it (1-5):</Text>
+        <View style={styles.ratingContainer}>
+          {[1, 2, 3, 4, 5].map((star) => (
+            <TouchableOpacity key={star} onPress={() => handleRating(star)}>
+              <Animated.View style={{ transform: [{ scale: star === rating ? scaleAnim : 1 }] }}>
+                <Ionicons
+                  name={star <= rating ? 'star' : 'star-outline'}
+                  size={36}
+                  color={star <= rating ? '#FFBF00' : '#CCCCCC'}
+                  style={styles.star}
+                />
+              </Animated.View>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        <Text style={styles.label}>📝 Spill Your Thoughts:</Text>
+        <TextInput
+          style={styles.textArea}
+          value={reviewText}
+          onChangeText={setReviewText}
+          multiline
+          numberOfLines={4}
+          placeholder="Type your legendary review here..."
+          placeholderTextColor="#CCCCCC"
+        />
+
+        <TouchableOpacity onPress={handleSubmitReview}>
+          <Animated.View style={[styles.submitButton, { transform: [{ scale: buttonAnim }] }]}>
+            <Text style={styles.buttonText}>Submit Your Review</Text>
+          </Animated.View>
+        </TouchableOpacity>
+
+        {/* Star Shower Animation */}
+        {stars.map((star) => (
+          <Animated.View
+            key={star.id}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: star.x,
+              transform: [{ translateY: star.animatedValue }],
+            }}
+          >
+            <MaterialCommunityIcons name="star-four-points" size={24} color="#FFD700" />
+          </Animated.View>
         ))}
-      </View>
-
-      <Text style={styles.label}>📝 Spill Your Thoughts:</Text>
-      <TextInput
-        style={styles.textArea}
-        value={reviewText}
-        onChangeText={setReviewText}
-        multiline
-        numberOfLines={4}
-        placeholder="Type your legendary review here..."
-        placeholderTextColor="#888"
-      />
-
-      <TouchableOpacity onPress={handleSubmitReview}>
-        <Animated.View style={[styles.submitButton, { transform: [{ scale: buttonAnim }] }]}>
-          <Text style={styles.buttonText}>Submit Your Review</Text>
-        </Animated.View>
-      </TouchableOpacity>
-
-      {/* Star Shower Animation */}
-      {stars.map((star) => (
-        <Animated.View
-          key={star.id}
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: star.x,
-            transform: [{ translateY: star.animatedValue }],
-          }}
-        >
-          <MaterialCommunityIcons name="star-four-points" size={24} color="#FFD700" />
-        </Animated.View>
-      ))}
-    </Animated.View>
+      </Animated.View>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
+  gradient: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#FFDCB5',
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
-    color: '#2C3E50',
+    color: '#F5F5DC',
   },
   label: {
     fontSize: 18,
     marginBottom: 8,
-    color: '#34495E',
+    color: '#F5F5DC',
   },
   pickerWrapper: {
     borderRadius: 10,
     overflow: 'hidden',
-    backgroundColor: '#fff',
+    backgroundColor: 'rgba(224, 165, 145, 0.2)',
     marginBottom: 20,
-    elevation: 3,
     borderWidth: 1,
-    borderColor: '#3498db',
+    borderColor: '#F5F5DC',
   },
   picker: {
     height: 60,
     width: '100%',
-    color: '#2C3E50',
+    color: '#F5F5DC',
     fontSize: 16,
   },
   ratingContainer: {
@@ -200,22 +209,23 @@ const styles = StyleSheet.create({
   },
   textArea: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#F5F5DC',
     padding: 12,
     marginBottom: 20,
     fontSize: 16,
     borderRadius: 8,
     height: 100,
-    backgroundColor: '#fff',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    color: '#F5F5DC',
   },
   submitButton: {
-    backgroundColor: '#3498db',
+    backgroundColor: 'rgba(134, 158, 96, 0.67)',
     padding: 15,
     borderRadius: 8,
     alignItems: 'center',
   },
   buttonText: {
-    color: 'white',
+    color: '#F2EDD7FF',
     fontWeight: 'bold',
     fontSize: 18,
   },

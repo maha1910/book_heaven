@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
 import { Easing } from 'react-native';
 
-// Import screens
+// Import screens (MAKE SURE THESE FILES EXIST & EXPORT COMPONENTS)
 import HomeScreen from './src/screens/HomeScreen';
 import FeaturedScreen from './src/screens/FeaturedScreen';
 import SearchScreen from './src/screens/SearchScreen';
@@ -16,6 +16,7 @@ import AtomicHabitsDetailsScreen from './src/screens/AtomicHabitsDetailsScreen';
 import UnderTheSameStarsDetailsScreen from './src/screens/UnderTheSameStarsDetailsScreen';
 import HeavenDetailsScreen from './src/screens/HeavenDetailsScreen';
 import LearningReactDetailScreen from './src/screens/LearningReactDetailScreen';
+import MeadowbrookMurdersDetailsScreen from './src/screens/MeadowbrookMurdersDetailsScreen';
 
 const Stack = createStackNavigator();
 
@@ -27,7 +28,7 @@ const scaleEffect = {
         {
           scale: current.progress.interpolate({
             inputRange: [0, 1],
-            outputRange: [0.8, 1], // Start at 80% and grow to full size
+            outputRange: [0.8, 1],
           }),
         },
       ],
@@ -36,7 +37,7 @@ const scaleEffect = {
 };
 
 const slideEffect = {
-  cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS, // Slide in from right
+  cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
 };
 
 const bounceEffect = {
@@ -68,6 +69,7 @@ const App = () => {
         <Stack.Screen name="UnderTheSameStarsDetails" component={UnderTheSameStarsDetailsScreen} options={slideEffect} />
         <Stack.Screen name="HeavenDetails" component={HeavenDetailsScreen} options={bounceEffect} />
         <Stack.Screen name="LearningReactDetailScreen" component={LearningReactDetailScreen} options={scaleEffect} />
+        <Stack.Screen name="MeadowbrookMurdersDetails" component={MeadowbrookMurdersDetailsScreen} options={slideEffect} />
       </Stack.Navigator>
     </NavigationContainer>
   );

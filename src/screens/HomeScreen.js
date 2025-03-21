@@ -4,13 +4,14 @@ import {
   TouchableOpacity, Image, FlatList, Animated 
 } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const HomeScreen = ({ navigation }) => {
   const [countdown, setCountdown] = useState('');
   const [fadeAnim] = useState(new Animated.Value(0));
   const [scaleAnim] = useState(new Animated.Value(1)); // Animation for the button
 
-  const releaseDate = new Date('2025-03-15T00:00:00Z');
+  const releaseDate = new Date('2025-05-18T00:00:00Z');
 
   const books = [
     { title: 'Atomic Habits', author: 'James Clear', rating: 4.5, image: 'https://m.media-amazon.com/images/I/81bGKUa1e0L.jpg' },
@@ -65,6 +66,12 @@ const HomeScreen = ({ navigation }) => {
   }, []);
 
   return (
+    <LinearGradient 
+          colors={['#91F1EF', '#FFD5E0']} // Purple to Blue gradient
+          start={{ x: 0.5, y: 0 }}  
+          end={{ x: 0.5, y: 0.7 }}  
+          style={styles.gradient}
+        >
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         {/* Header Section */}
@@ -75,7 +82,7 @@ const HomeScreen = ({ navigation }) => {
           <Text style={styles.upcomingTitle}>🚀 Upcoming Release</Text>
           <Text style={styles.bookTitle}>Future of AI</Text>
           <Text>Author: Dr. Sarah Connor</Text>
-          <Text>Release Date: March 15, 2025</Text>
+          <Text>Release Date: May 18, 2025</Text>
           <Text style={styles.countdown}>⏳ {countdown}</Text>
 
           {/* Animated Notification Button */}
@@ -149,11 +156,14 @@ const HomeScreen = ({ navigation }) => {
         <Ionicons name="search" size={28} color="white" />
       </TouchableOpacity>
     </View>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FFDCB5' },
+  gradient: {
+    flex: 1,
+  },
   scrollViewContent: { padding: 20 },
   header: { fontSize: 26, fontWeight: 'bold', textAlign: 'center', color: '#2C3E50', marginBottom: 20 },
   sectionTitle: { fontSize: 20, fontWeight: 'bold', marginBottom: 10, color: '#2980B9' },

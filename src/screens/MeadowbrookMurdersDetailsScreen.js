@@ -3,41 +3,40 @@ import { View, Text, StyleSheet, ScrollView, Image, Button } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 
-const heavenAndEarthCover = require('../../assets/heaven-and-earth-cover.jpg'); // Ensure correct path
+const meadowbrookCover = require('../../assets/meadowbrook-murders-cover.jpg'); // Ensure correct path
 
-const HeavenDetailsScreen = () => {
+const MeadowbrookMurdersDetails = () => {
   const navigation = useNavigation();
 
   return (
     <LinearGradient 
-      colors={['#F2AA4CFF', '#101820FF']}  // Soft pink gradient
-      start={{ x: 0.5, y: 0 }}  
-      end={{ x: 0.5, y: 0.7 }}  
+      colors={['#F2AA4CFF', '#101820FF']}  // Flipped colors for upside-down effect
+      start={{ x: 0.5, y: 0 }}  // Starts from the bottom
+      end={{ x: 0.5, y: 0.7 }}    // Ends at the top
       style={styles.gradient}
     >
       <ScrollView contentContainerStyle={styles.container}>
-        <Image source={heavenAndEarthCover} style={styles.bookCover} />
+        <Image source={meadowbrookCover} style={styles.bookCover} />
+        <Text style={styles.title}>The Meadowbrook Murders</Text>
+        <Text style={styles.author}>Author: Jessica Goodman</Text>
+        <Text style={styles.year}>Published: 2024</Text>
+        <Text style={styles.pages}>Pages: 350</Text>
         
-        <Text style={styles.title}>The Heaven & Earth Grocery Store</Text>
-        <Text style={styles.author}>Author: James McBride</Text>
-        <Text style={styles.year}>Published: 2023</Text>
-        <Text style={styles.pages}>Pages: 400</Text>
-
         <Text style={styles.sectionTitle}>Summary:</Text>
         <Text style={styles.description}>
-          *The Heaven & Earth Grocery Store* is a compelling novel about a small, diverse community in Pottstown,
-          Pennsylvania. Through rich storytelling, McBride explores themes of love, belonging, and the struggles of
-          marginalized people, all centered around a dilapidated grocery store that holds generations of history.
+          *The Meadowbrook Murders* is a thrilling mystery novel that unravels a series of unsolved crimes 
+          in a quiet suburban town. Detective Harper Reed must piece together clues hidden within the town’s 
+          darkest secrets before the murderer strikes again.
         </Text>
-
+        
         <Text style={styles.sectionTitle}>Key Themes:</Text>
         <Text style={styles.description}>
-          - Community and Belonging{"\n"}
-          - Love and Struggles{"\n"}
-          - Historical and Social Reflections
+          - Mystery & Investigation{'\n'}
+          - Secrets & Lies{'\n'}
+          - Small-Town Suspense
         </Text>
-
-        <Text style={styles.sectionTitle}>Rating: ⭐ 4.7/5</Text>
+        
+        <Text style={styles.sectionTitle}>Rating: ⭐ 4.6/5</Text>
 
         {/* Back to Home Button */}
         <View style={styles.buttonContainer}>
@@ -59,7 +58,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 300,
     resizeMode: 'contain',
-    marginBottom: 10,
+    marginBottom: 15,
   },
   title: {
     fontSize: 22,
@@ -69,18 +68,19 @@ const styles = StyleSheet.create({
   },
   author: {
     fontSize: 18,
-    color: '#f5f5f5',
+    color: '#ecf0f1',
     textAlign: 'center',
   },
   year: {
     fontSize: 16,
-    color: '#f5f5f5',
+    color: '#ecf0f1',
     textAlign: 'center',
   },
   pages: {
     fontSize: 16,
-    color: '#f5f5f5',
+    color: '#ecf0f1',
     textAlign: 'center',
+    marginBottom: 10,
   },
   sectionTitle: {
     fontSize: 18,
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 16,
     lineHeight: 22,
-    color: '#f5f5f5',
+    color: '#ecf0f1',
   },
   buttonContainer: {
     marginTop: 20,
@@ -99,4 +99,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HeavenDetailsScreen;
+export default MeadowbrookMurdersDetails;

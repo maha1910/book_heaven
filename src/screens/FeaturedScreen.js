@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const { width } = Dimensions.get('window');
 
@@ -29,7 +30,12 @@ const FeaturedScreen = ({ navigation }) => {
   ];
 
   return (
-    <View style={styles.container}>
+    <LinearGradient 
+      colors={['#D7C49EFF', '#343148FF']} // Powdered Sugar to Silver
+      start={{ x: 0.5, y: 0 }} 
+      end={{ x: 0.5, y: 1.2 }}
+      style={styles.gradient}
+    >
       <FlatList
         data={featuredBooks}
         keyExtractor={(item) => item.id.toString()}
@@ -47,19 +53,18 @@ const FeaturedScreen = ({ navigation }) => {
           </TouchableOpacity>
         )}
       />
-    </View>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  gradient: {
     flex: 1,
-    backgroundColor: '#fff',
     padding: 10,
   },
   card: {
     flexDirection: 'row',
-    backgroundColor: '#f9f9f9',
+    backgroundColor: 'rgba(255, 255, 255, 0.8)', // Slight transparency for effect
     borderRadius: 10,
     padding: 10,
     marginVertical: 8,
@@ -81,10 +86,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: 'bold',
+    color: '#333', // Darker contrast
   },
   author: {
     fontSize: 14,
-    color: 'gray',
+    color: '#555', // Slightly dark gray
   },
   ratingContainer: {
     flexDirection: 'row',
@@ -95,6 +101,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     fontSize: 14,
     fontWeight: 'bold',
+    color: '#222', // Dark text for readability
   },
 });
 
