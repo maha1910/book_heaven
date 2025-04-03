@@ -5,24 +5,30 @@ import {
 } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as Location from "expo-location";
+import { ActivityIndicator } from 'react-native';
+import { Linking } from 'react-native';
+
 
 const HomeScreen = ({ navigation }) => {
   const [countdown, setCountdown] = useState('');
   const [fadeAnim] = useState(new Animated.Value(0));
   const [scaleAnim] = useState(new Animated.Value(1)); // Animation for the button
+  const [location, setLocation] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const releaseDate = new Date('2025-05-18T00:00:00Z');
 
   const books = [
-    { title: 'Atomic Habits', author: 'James Clear', rating: 4.5, image: 'https://m.media-amazon.com/images/I/81bGKUa1e0L.jpg' },
-    { title: 'The Heaven & Earth Grocery Store', author: 'James McBride', rating: 4.8, image: 'https://m.media-amazon.com/images/I/71gLNSLmIxL.SL1500.jpg' },
-    { title: 'Learning React', author: 'Alex Banks', rating: 5.0, image: 'https://m.media-amazon.com/images/I/51ad7GkEzNL.jpg' },
+    { title: 'Atomic Habits', author: 'James Clear', rating: 4.5, image: 'https://m.media-amazon.com/images/I/81bGKUa1e0L.jpg', screen: 'AtomicHabitsDetails' },
+    { title: 'The Heaven & Earth Grocery Store', author: 'James McBride', rating: 4.8, image: 'https://m.media-amazon.com/images/I/71gLNSLmIxL.SL1500.jpg', screen: 'HeavenDetails' },
+    { title: 'Learning React', author: 'Alex Banks', rating: 5.0, image: 'https://m.media-amazon.com/images/I/51ad7GkEzNL.jpg', screen: 'LearningReactDetailScreen' },
   ];
 
   const topReviews = [
-    { title: 'Atomic Habits', author: 'James Clear', rating: 4.5, review: 'A great read for building better habits.', image: 'https://m.media-amazon.com/images/I/81bGKUa1e0L.jpg' },
-    { title: 'The Heaven & Earth Grocery Store', author: 'James McBride', rating: 4.8, review: 'An extraordinary story of family and survival.', image: 'https://m.media-amazon.com/images/I/71gLNSLmIxL.SL1500.jpg' },
-    { title: 'Learning React', author: 'Alex Banks', rating: 5.0, review: 'The best book to start learning React!', image: 'https://m.media-amazon.com/images/I/51ad7GkEzNL.jpg' },
+    { title: 'Atomic Habits', author: 'James Clear', rating: 4.5, image: 'https://m.media-amazon.com/images/I/81bGKUa1e0L.jpg', screen: 'AtomicHabitsDetails' },
+    { title: 'The Heaven & Earth Grocery Store', author: 'James McBride', rating: 4.8, image: 'https://m.media-amazon.com/images/I/71gLNSLmIxL.SL1500.jpg', screen: 'HeavenDetails' },
+    { title: 'Learning React', author: 'Alex Banks', rating: 5.0, image: 'https://m.media-amazon.com/images/I/51ad7GkEzNL.jpg', screen: 'LearningReactDetailScreen' },
   ];
 
   useEffect(() => {
@@ -37,7 +43,27 @@ const HomeScreen = ({ navigation }) => {
       }
     }, 1000);
     return () => clearInterval(interval);
+
+    
   }, []);
+
+  useEffect(() => {
+    const getLocation = async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert("Permission Denied", "Enable location services to find your location.");
+        setLoading(false);
+        return;
+      }
+
+      let locationData = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High });
+      setLocation(locationData.coords);
+      setLoading(false);
+    };
+
+    getLocation();
+  }, []);
+
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -64,6 +90,17 @@ const HomeScreen = ({ navigation }) => {
       ])
     ).start();
   }, []);
+  const openMaps = () => {
+    if (location) {
+      const url = `https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}`;
+      Linking.openURL(url);
+    } else {
+      Alert.alert("Location not available", "Try again later.");
+    }
+  };
+
+  if (loading) return <ActivityIndicator size="large" color="blue" />;
+
 
   return (
     <LinearGradient 
@@ -93,40 +130,61 @@ const HomeScreen = ({ navigation }) => {
           </Animated.View>
         </Animated.View>
 
+        
+
         {/* Featured Books Section */}
         <Text style={styles.sectionTitle}>📚 Featured Books</Text>
         <FlatList
-          horizontal
-          data={books}
-          keyExtractor={(item) => item.title}
-          renderItem={({ item }) => (
-            <View style={styles.bookCard}>
-              <Image source={{ uri: item.image }} style={styles.bookImage} />
-              <Text style={styles.bookTitle}>{item.title}</Text>
-              <Text style={styles.bookAuthor}>by {item.author}</Text>
-              <Text style={styles.bookRating}>⭐ {item.rating}</Text>
-            </View>
-          )}
+         horizontal
+         data={books}
+         keyExtractor={(item) => item.title}
+         renderItem={({ item }) => (
+           <TouchableOpacity 
+             style={styles.bookCard} 
+             onPress={() => {
+               if (item.screen) {
+                 navigation.navigate(item.screen);
+                } else {
+                  console.warn(`No screen defined for ${item.title}`);
+                }
+              }}
+              >
+                <Image source={{ uri: item.image }} style={styles.bookImage} />
+                <Text style={styles.bookTitle}>{item.title}</Text>
+                <Text style={styles.bookAuthor}>by {item.author}</Text>
+                <Text style={styles.bookRating}>⭐ {item.rating}</Text>
+              </TouchableOpacity>
+            )}
           showsHorizontalScrollIndicator={false}
         />
+
 
         {/* Top Reviews Section */}
         <Text style={styles.sectionTitle}>🌟 Top Reviews</Text>
         <FlatList
-          horizontal
-          data={topReviews}
-          keyExtractor={(item) => item.title}
-          renderItem={({ item }) => (
-            <View style={styles.bookCard}>
-              <Image source={{ uri: item.image }} style={styles.bookImage} />
-              <Text style={styles.bookTitle}>{item.title}</Text>
-              <Text style={styles.bookAuthor}>by {item.author}</Text>
-              <Text style={styles.bookRating}>⭐ {item.rating}</Text>
-              <Text style={styles.bookReview}>{item.review}</Text>
-            </View>
-          )}
+         horizontal
+         data={books}
+         keyExtractor={(item) => item.title}
+         renderItem={({ item }) => (
+           <TouchableOpacity 
+             style={styles.bookCard} 
+             onPress={() => {
+               if (item.screen) {
+                 navigation.navigate(item.screen);
+                } else {
+                  console.warn(`No screen defined for ${item.title}`);
+                }
+              }}
+              >
+                <Image source={{ uri: item.image }} style={styles.bookImage} />
+                <Text style={styles.bookTitle}>{item.title}</Text>
+                <Text style={styles.bookAuthor}>by {item.author}</Text>
+                <Text style={styles.bookRating}>⭐ {item.rating}</Text>
+              </TouchableOpacity>
+            )}
           showsHorizontalScrollIndicator={false}
         />
+
 
         {/* Action Buttons */}
         <View style={styles.actionButtons}>
@@ -149,12 +207,24 @@ const HomeScreen = ({ navigation }) => {
         <TouchableOpacity style={styles.buttonOutline} onPress={() => navigation.navigate('RecommendBooks')}>
           <Text style={styles.buttonOutlineText}>📖 Recommend Books</Text>
         </TouchableOpacity>
+
+        <View style={styles.container}>
+        {location ? (
+          <TouchableOpacity style={styles.locationBox} onPress={openMaps}>
+          <Ionicons name="location" size={20} color="white" />
+          <Text style={styles.locationText}>📍 View Location in Maps</Text>
+        </TouchableOpacity>
+        ) : (
+        <Text style={styles.errorText}>❌ Location not available</Text>
+        )}
+        </View>
       </ScrollView>
 
       {/* Floating Action Button */}
       <TouchableOpacity style={styles.fab} onPress={() => navigation.navigate('Search')}>
         <Ionicons name="search" size={28} color="white" />
       </TouchableOpacity>
+
     </View>
     </LinearGradient>
   );
@@ -182,7 +252,10 @@ const styles = StyleSheet.create({
   button: { flexDirection: 'row', backgroundColor: '#2980B9', padding: 10, borderRadius: 5, alignItems: 'center', width: '45%' },
   buttonText: { color: 'white', marginLeft: 10, fontWeight: 'bold' },
   buttonOutline: { backgroundColor: '#fff', borderColor: '#2980B9', borderWidth: 1, padding: 12, borderRadius: 5, marginVertical: 10, alignItems: 'center' },
-  buttonOutlineText: { color: '#2980B9', fontWeight: 'bold' },
+  buttonOutlineText: { color: '#2980B9', fontWeight: 'bold' },container: { alignItems: "center" },
+  locationBox: { flexDirection: "row", backgroundColor: "#2980B9", padding: 12, borderRadius: 5, alignItems: "center" },
+  locationText: { color: "white", fontWeight: "bold", marginLeft: 10 },
+  errorText: { color: "red", fontSize: 16 },
   fab: { position: 'absolute', bottom: 20, right: 20, backgroundColor: '#2980B9', width: 60, height: 60, borderRadius: 30, alignItems: 'center', justifyContent: 'center' },
 });
 

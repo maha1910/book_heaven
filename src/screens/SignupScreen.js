@@ -42,19 +42,22 @@ const SignupScreen = ({ navigation }) => {
       }
 
       const user = data?.user;
+
       if (!user) {
-        Alert.alert('Signup Failed', 'Check your email for verification before logging in.');
+        Alert.alert('Signup Successful', 'Check your email for verification before logging in.');
         return;
       }
 
-      // Insert user into the 'users' table
+      console.log('User ID:', user.id);
+
+      // Insert user into the 'users' table with the correct UID
       const { error: insertError } = await supabase
         .from('users')
         .insert([{ id: user.id, username, email }]);
 
       if (insertError) {
         console.error('Database Insert Error:', insertError.message);
-        Alert.alert('Signup Failed', 'Could not save user in database.');
+        Alert.alert('Signup Failed', 'Could not save user in database. Try again later.');
         return;
       }
 

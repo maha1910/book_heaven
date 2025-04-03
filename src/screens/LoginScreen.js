@@ -5,39 +5,52 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
-import { supabase } from '../../supabaseConfig';  // Import Supabase client
+import { supabase } from '../../supabaseConfig';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
+  // ✅ Function to track user logins
+  const trackLogin = async (userId, email) => {
+    try {
+      const { data, error } = await supabase.from('user_logins').insert([{ user_id: userId, email }]);
+  
+      if (error) {
+        console.error("❌ Failed to track login:", error);  // Log the full error
+        throw error;
+      }
+  
+      console.log("✅ Login tracked successfully!", data);
+    } catch (err) {
+      console.error("❌ Track Login Error:", err);
+    }
+  };
+  
+
+  // ✅ Login function with tracking
   const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert('Error', 'Please fill in all fields');
       return;
     }
 
-    // Sign in using Supabase Auth
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
-    if (error) {
-      Alert.alert('Login Failed', error.message);
-      return;
+      if (error) throw error;
+      if (!data.user) throw new Error("User not found. Please sign up.");
+      if (!data.user.confirmed_at) throw new Error("Please verify your email before logging in.");
+
+      // ✅ Track login event in Supabase
+      await trackLogin(data.user.id, data.user.email);
+
+      Alert.alert('Success', 'Logged in successfully!');
+      navigation.replace('Home');
+    } catch (err) {
+      Alert.alert('Login Failed', err.message);
     }
-
-    if (!data.user) {
-      Alert.alert('Error', 'User not found. Please sign up.');
-      return;
-    }
-
-    if (!data.user.confirmed_at) {
-      Alert.alert('Error', 'Please verify your email before logging in.');
-      return;
-    }
-
-    Alert.alert('Success', 'Logged in successfully!');
-    navigation.replace('Home');
   };
 
   return (
@@ -118,29 +131,11 @@ const LoginScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  content: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-  },
-  logoContainer: {
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  logo: {
-    width: 120,
-    height: 120,
-  },
-  appName: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginTop: 5,
-  },
+  container: { flex: 1 },
+  content: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 20 },
+  logoContainer: { alignItems: 'center', marginBottom: 20 },
+  logo: { width: 120, height: 120 },
+  appName: { fontSize: 22, fontWeight: 'bold', color: '#fff', marginTop: 5 },
   loginBox: {
     backgroundColor: '#fff',
     width: '100%',
@@ -149,11 +144,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     elevation: 5,
   },
-  welcomeText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 15,
-  },
+  welcomeText: { fontSize: 24, fontWeight: 'bold', marginBottom: 15 },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -166,11 +157,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#BDC3C7',
   },
-  input: {
-    flex: 1,
-    height: 50,
-    marginLeft: 10,
-  },
+  input: { flex: 1, height: 50, marginLeft: 10 },
   button: {
     backgroundColor: '#0072FF',
     width: '100%',
@@ -181,17 +168,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
     elevation: 3,
   },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  socialButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-    marginTop: 10,
-  },
+  buttonText: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
+  socialButtons: { flexDirection: 'row', justifyContent: 'space-between', width: '100%', marginTop: 10 },
   socialButton: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -202,24 +180,11 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
     justifyContent: 'center',
   },
-  socialIcon: {
-    marginRight: 10,
-  },
-  socialText: {
-    fontWeight: 'bold',
-  },
-  signupContainer: {
-    flexDirection: 'row',
-    marginTop: 20,
-    justifyContent: 'center',
-  },
-  signupText: {
-    color: '#5D6D7E',
-  },
-  signupLink: {
-    color: '#2980B9',
-    fontWeight: 'bold',
-  },
+  socialIcon: { marginRight: 10 },
+  socialText: { fontWeight: 'bold' },
+  signupContainer: { flexDirection: 'row', marginTop: 20, justifyContent: 'center' },
+  signupText: { color: '#5D6D7E' },
+  signupLink: { color: '#2980B9', fontWeight: 'bold' },
 });
 
 export default LoginScreen;

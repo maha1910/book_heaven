@@ -12,6 +12,7 @@ import {
 import { Picker } from '@react-native-picker/picker';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { supabase } from '../../supabaseConfig';
 
 const { width, height } = Dimensions.get('window');
 
@@ -71,20 +72,52 @@ const AddReviewScreen = ({ navigation }) => {
     });
   };
 
-  const handleSubmitReview = () => {
-    if (selectedBook && reviewText.trim() && rating > 0) {
+  const handleSubmitReview = async () => {
+    if (!selectedBook || !reviewText.trim() || rating === 0) {
+      Alert.alert('🚨 Hold Up!', 'Gotta pick a book, drop a review, and slap on a rating!');
+      return;
+    }
+
+    // 🔥 Get current user
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    
+    if (userError || !user) {
+      Alert.alert('🚫 Error', 'User not logged in. Please sign in first.');
+      return;
+    }
+
+    try {
+      console.log('Submitting review:', { user_id: user.id, selectedBook, rating, reviewText });
+
+      const { error } = await supabase.from('book_reviews').insert([
+        {
+          user_id: user.id,
+          book_name: selectedBook,
+          rating: rating,
+          review_text: reviewText,
+        }
+      ]);
+
+      if (error) throw error;
+
+      // ✅ Review submitted successfully
       Animated.sequence([
         Animated.timing(buttonAnim, { toValue: 1.2, duration: 100, useNativeDriver: true }),
         Animated.timing(buttonAnim, { toValue: 1, duration: 100, useNativeDriver: true }),
       ]).start();
 
       Alert.alert('🔥 Boom! Review Submitted!', 'Your review just landed in the hall of fame!');
+
+      // Reset state
       setSelectedBook('');
       setReviewText('');
       setRating(0);
+
+      // Navigate back
       navigation.goBack();
-    } else {
-      Alert.alert('🚨 Hold Up!', 'Gotta pick a book, drop a review, and slap on a rating!');
+    } catch (err) {
+      Alert.alert('🚨 Submission Failed!', err.message);
+      console.error('❌ Review Submission Error:', err);
     }
   };
 
@@ -148,87 +181,22 @@ const AddReviewScreen = ({ navigation }) => {
             <Text style={styles.buttonText}>Submit Your Review</Text>
           </Animated.View>
         </TouchableOpacity>
-
-        {/* Star Shower Animation */}
-        {stars.map((star) => (
-          <Animated.View
-            key={star.id}
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: star.x,
-              transform: [{ translateY: star.animatedValue }],
-            }}
-          >
-            <MaterialCommunityIcons name="star-four-points" size={24} color="#FFD700" />
-          </Animated.View>
-        ))}
       </Animated.View>
     </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
-  gradient: {
-    flex: 1,
-  },
-  container: {
-    flex: 1,
-    padding: 20,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-    color: '#F5F5DC',
-  },
-  label: {
-    fontSize: 18,
-    marginBottom: 8,
-    color: '#F5F5DC',
-  },
-  pickerWrapper: {
-    borderRadius: 10,
-    overflow: 'hidden',
-    backgroundColor: 'rgba(224, 165, 145, 0.2)',
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#F5F5DC',
-  },
-  picker: {
-    height: 60,
-    width: '100%',
-    color: '#F5F5DC',
-    fontSize: 16,
-  },
-  ratingContainer: {
-    flexDirection: 'row',
-    marginBottom: 20,
-    justifyContent: 'center',
-  },
-  textArea: {
-    borderWidth: 1,
-    borderColor: '#F5F5DC',
-    padding: 12,
-    marginBottom: 20,
-    fontSize: 16,
-    borderRadius: 8,
-    height: 100,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    color: '#F5F5DC',
-  },
-  submitButton: {
-    backgroundColor: 'rgba(134, 158, 96, 0.67)',
-    padding: 15,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#F2EDD7FF',
-    fontWeight: 'bold',
-    fontSize: 18,
-  },
+  gradient: { flex: 1 },
+  container: { flex: 1, padding: 20 },
+  title: { fontSize: 28, fontWeight: 'bold', marginBottom: 20, textAlign: 'center', color: '#F5F5DC' },
+  label: { fontSize: 18, marginBottom: 8, color: '#F5F5DC' },
+  pickerWrapper: { borderRadius: 10, overflow: 'hidden', marginBottom: 20, borderWidth: 1, borderColor: '#F5F5DC' },
+  picker: { height: 60, width: '100%', color: '#F5F5DC' },
+  ratingContainer: { flexDirection: 'row', marginBottom: 20, justifyContent: 'center' },
+  textArea: { borderWidth: 1, borderColor: '#F5F5DC', padding: 12, marginBottom: 20, fontSize: 16, borderRadius: 8, height: 100, backgroundColor: 'rgba(255, 255, 255, 0.2)', color: '#F5F5DC' },
+  submitButton: { backgroundColor: 'rgba(134, 158, 96, 0.67)', padding: 15, borderRadius: 8, alignItems: 'center' },
+  buttonText: { color: '#F2EDD7FF', fontWeight: 'bold', fontSize: 18 },
 });
 
 export default AddReviewScreen;
