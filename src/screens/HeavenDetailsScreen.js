@@ -66,7 +66,7 @@ const HeavenDetailsScreen = () => {
           - Historical and Social Reflections
         </Text>
 
-        <Text style={styles.sectionTitle}>⭐ Average Rating:</Text>
+        <Text style={styles.sectionTitle}>⭐ Rating:</Text>
         {loading ? (
           <ActivityIndicator size="large" color="#FFD700" />
         ) : (

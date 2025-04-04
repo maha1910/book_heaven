@@ -91,13 +91,11 @@ const HomeScreen = ({ navigation }) => {
     ).start();
   }, []);
   const openMaps = () => {
-    if (location) {
-      const url = `https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}`;
-      Linking.openURL(url);
-    } else {
-      Alert.alert("Location not available", "Try again later.");
-    }
+    const url = "https://maps.app.goo.gl/DS7G1zooDKab4xn49?g_st=awb".trim();
+    Linking.openURL(url).catch((err) => console.error("❌ Failed to open map:", err));
   };
+  
+  
 
   if (loading) return <ActivityIndicator size="large" color="blue" />;
 
@@ -212,7 +210,7 @@ const HomeScreen = ({ navigation }) => {
         {location ? (
           <TouchableOpacity style={styles.locationBox} onPress={openMaps}>
           <Ionicons name="location" size={20} color="white" />
-          <Text style={styles.locationText}>📍 View Location in Maps</Text>
+          <Text style={styles.locationText}>📌 Location of Nearest Book Fair    </Text>
         </TouchableOpacity>
         ) : (
         <Text style={styles.errorText}>❌ Location not available</Text>
@@ -252,9 +250,24 @@ const styles = StyleSheet.create({
   button: { flexDirection: 'row', backgroundColor: '#2980B9', padding: 10, borderRadius: 5, alignItems: 'center', width: '45%' },
   buttonText: { color: 'white', marginLeft: 10, fontWeight: 'bold' },
   buttonOutline: { backgroundColor: '#fff', borderColor: '#2980B9', borderWidth: 1, padding: 12, borderRadius: 5, marginVertical: 10, alignItems: 'center' },
-  buttonOutlineText: { color: '#2980B9', fontWeight: 'bold' },container: { alignItems: "center" },
-  locationBox: { flexDirection: "row", backgroundColor: "#2980B9", padding: 12, borderRadius: 5, alignItems: "center" },
-  locationText: { color: "white", fontWeight: "bold", marginLeft: 10 },
+  buttonOutlineText: { color: '#2980B9', fontWeight: 'bold' },locationBox: { 
+    backgroundColor: '#fff', 
+    borderColor: '#2980B9', 
+    borderWidth: 1, 
+    padding: 12, 
+    borderRadius: 5, 
+    marginVertical: 10, 
+    alignItems: 'center', 
+    flexDirection: 'row', 
+    justifyContent: 'center' 
+  },
+  
+  locationText: { 
+    color: '#2980B9', 
+    fontWeight: 'bold', 
+    marginLeft: 10 
+  },
+  
   errorText: { color: "red", fontSize: 16 },
   fab: { position: 'absolute', bottom: 20, right: 20, backgroundColor: '#2980B9', width: 60, height: 60, borderRadius: 30, alignItems: 'center', justifyContent: 'center' },
 });

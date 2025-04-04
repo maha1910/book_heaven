@@ -65,7 +65,7 @@ const LearningReactDetailScreen = () => {
           - Build performant and scalable React apps
         </Text>
 
-        <Text style={styles.sectionTitle}>⭐ Average Rating:</Text>
+        <Text style={styles.sectionTitle}>⭐ Rating:</Text>
         {loading ? (
           <ActivityIndicator size="large" color="#FFD700" />
         ) : (

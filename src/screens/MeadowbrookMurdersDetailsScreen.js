@@ -65,7 +65,7 @@ const MeadowbrookMurdersDetails = () => {
           - Small-Town Suspense
         </Text>
         
-        <Text style={styles.sectionTitle}>⭐ Average Rating:</Text>
+        <Text style={styles.sectionTitle}>⭐ Rating:</Text>
         {loading ? (
           <ActivityIndicator size="large" color="#FFD700" />
         ) : (

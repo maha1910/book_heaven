@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, Modal, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { supabase } from '../../supabaseConfig';
 
 const RecommendBooksScreen = ({ navigation }) => {
   const [bookTitle, setBookTitle] = useState('');
@@ -10,20 +11,46 @@ const RecommendBooksScreen = ({ navigation }) => {
   const [rating, setRating] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  const handleRecommendBook = () => {
-    if (bookTitle.trim() && bookAuthor.trim() && recommendationText.trim() && rating > 0) {
-      setLoading(true);
-      setTimeout(() => {
-        Alert.alert('🔥 Success!', 'Your book recommendation is live!');
-        setBookTitle('');
-        setBookAuthor('');
-        setRecommendationText('');
-        setRating(0);
-        setLoading(false);
-        navigation.goBack();
-      }, 1500);
-    } else {
+  const handleRecommendBook = async () => {
+    if (!bookTitle.trim() || !bookAuthor.trim() || !recommendationText.trim() || rating === 0) {
       Alert.alert('🚨 Oops!', 'Fill all fields + a rating to submit.');
+      return;
+    }
+
+    setLoading(true);
+
+    // Get the logged-in user
+    const { data: userData, error: userError } = await supabase.auth.getUser();
+    if (userError || !userData?.user) {
+      Alert.alert('❌ Error!', 'User not found. Please log in.');
+      setLoading(false);
+      return;
+    }
+
+    const userId = userData.user.id; // Extract the user ID
+
+    const { data, error } = await supabase.from('recommended_books').insert([
+      {
+        user_id: userId, // Link book to logged-in user
+        book_title: bookTitle,
+        author: bookAuthor,
+        recommendation_text: recommendationText,
+        rating,
+      },
+    ]);
+
+    setLoading(false);
+
+    if (error) {
+      console.error('Supabase Insert Error:', error);
+      Alert.alert('❌ Error!', error.message || 'Something went wrong. Please try again.');
+    } else {
+      Alert.alert('🔥 Success!', 'Your book recommendation is live!');
+      setBookTitle('');
+      setBookAuthor('');
+      setRecommendationText('');
+      setRating(0);
+      navigation.goBack();
     }
   };
 

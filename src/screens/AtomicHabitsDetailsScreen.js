@@ -69,7 +69,7 @@ const AtomicHabitsDetailsScreen = () => {
           • Make habits easy, attractive, and satisfying.
         </Text>
 
-        <Text style={styles.sectionTitle}>⭐ Average Rating:</Text>
+        <Text style={styles.sectionTitle}>⭐ Rating:</Text>
         {loading ? (
           <ActivityIndicator size="large" color="#FFD700" />
         ) : (

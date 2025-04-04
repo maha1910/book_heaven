@@ -1,53 +1,81 @@
-import React from 'react';
-import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, Dimensions } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { supabase } from '../../supabaseConfig';
 
 const { width } = Dimensions.get('window');
 
 const NewArrivalsScreen = ({ navigation }) => {
-  const newArrivals = [
+  const [newArrivals, setNewArrivals] = useState([
     {
-      title: 'Under the Same Stars', author: 'Jane Harper', rating: 4.2,
-      image: 'https://m.media-amazon.com/images/I/81HcIAJnyQL._SL1500_.jpg',
-      screen: 'UnderTheSameStarsDetails', id: 1
+      title: 'Under the Same Stars', author: 'Jane Harper', image: 'https://m.media-amazon.com/images/I/81HcIAJnyQL._SL1500_.jpg', screen: 'UnderTheSameStarsDetails', id: 1, rating: null
     },
     {
-      title: 'The Heaven & Earth Grocery Store', author: 'James McBride', rating: 4.8,
-      image: 'https://m.media-amazon.com/images/I/71gLNSLmIxL._SL1500_.jpg',
-      screen: 'HeavenDetails', id: 2
+      title: 'The Heaven & Earth Grocery Store', author: 'James McBride', image: 'https://m.media-amazon.com/images/I/71gLNSLmIxL._SL1500_.jpg', screen: 'HeavenDetails', id: 2, rating: null
     },
     {
-      title: 'The Meadowbrook Murders', author: 'Jessica Goodman', rating: 4.6,
-      image: 'https://m.media-amazon.com/images/I/71KJMVYP+7L._SL1500_.jpg',
-      screen: 'MeadowbrookMurdersDetails', id: 3
+      title: 'The Meadowbrook Murders', author: 'Jessica Goodman', image: 'https://m.media-amazon.com/images/I/71KJMVYP+7L._SL1500_.jpg', screen: 'MeadowbrookMurdersDetails', id: 3, rating: null
     },
-  ];
+  ]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchRatings = async () => {
+      const updatedBooks = await Promise.all(
+        newArrivals.map(async (book) => {
+          const { data, error } = await supabase
+            .from('book_reviews')
+            .select('rating')
+            .eq('book_name', book.title);
+
+          if (error) {
+            console.error(`Error fetching rating for ${book.title}:`, error);
+            return { ...book, rating: 'N/A' };
+          }
+
+          const totalRatings = data.length;
+          const sumRatings = data.reduce((acc, review) => acc + review.rating, 0);
+          const avgRating = totalRatings ? (sumRatings / totalRatings).toFixed(1) : 'No ratings yet';
+          return { ...book, rating: avgRating };
+        })
+      );
+
+      setNewArrivals(updatedBooks);
+      setLoading(false);
+    };
+
+    fetchRatings();
+  }, []);
 
   return (
     <LinearGradient 
-      colors={['#D7C49EFF', '#343148FF']} // New gradient colors
+      colors={['#D7C49EFF', '#343148FF']}
       start={{ x: 0.5, y: 0 }} 
       end={{ x: 0.5, y: 1.2 }}
       style={styles.gradient}
     >
-      <FlatList
-        data={newArrivals}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity style={styles.card} onPress={() => navigation.navigate(item.screen)}>
-            <Image source={{ uri: item.image }} style={styles.bookImage} />
-            <View style={styles.textContainer}>
-              <Text style={styles.title}>{item.title}</Text>
-              <Text style={styles.author}>by {item.author}</Text>
-              <View style={styles.ratingContainer}>
-                <Ionicons name="star" size={16} color="gold" />
-                <Text style={styles.rating}>{item.rating}</Text>
+      {loading ? (
+        <ActivityIndicator size="large" color="gold" style={{ marginTop: 20 }} />
+      ) : (
+        <FlatList
+          data={newArrivals}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <TouchableOpacity style={styles.card} onPress={() => navigation.navigate(item.screen)}>
+              <Image source={{ uri: item.image }} style={styles.bookImage} />
+              <View style={styles.textContainer}>
+                <Text style={styles.title}>{item.title}</Text>
+                <Text style={styles.author}>by {item.author}</Text>
+                <View style={styles.ratingContainer}>
+                  <Ionicons name="star" size={16} color="gold" />
+                  <Text style={styles.rating}>{item.rating}</Text>
+                </View>
               </View>
-            </View>
-          </TouchableOpacity>
-        )}
-      />
+            </TouchableOpacity>
+          )}
+        />
+      )}
     </LinearGradient>
   );
 };
@@ -59,7 +87,7 @@ const styles = StyleSheet.create({
   },
   card: {
     flexDirection: 'row',
-    backgroundColor: 'rgba(255, 255, 255, 0.8)', // Slight transparency
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
     borderRadius: 10,
     padding: 10,
     marginVertical: 8,
@@ -81,11 +109,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333', // Darker contrast
+    color: '#333',
   },
   author: {
     fontSize: 14,
-    color: '#555', // Slightly dark gray
+    color: '#555',
   },
   ratingContainer: {
     flexDirection: 'row',
@@ -96,7 +124,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#222', // Dark text for readability
+    color: '#222',
   },
 });
 
