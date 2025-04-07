@@ -1,3 +1,4 @@
+// ✨ Final version with upgraded star shower and Supabase submission
 import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
@@ -56,19 +57,24 @@ const AddReviewScreen = ({ navigation }) => {
       }).start();
     });
 
-    let newStars = Array.from({ length: 10 }, () => ({
+    // 🌠 Boosted Star Shower
+    const STAR_COUNT = 30;
+    let newStars = Array.from({ length: STAR_COUNT }, () => ({
       id: Math.random().toString(),
       animatedValue: new Animated.Value(0),
       x: Math.random() * width,
     }));
-    setStars([...stars, ...newStars]);
+    setStars((prev) => [...prev, ...newStars]);
 
     newStars.forEach((star) => {
       Animated.timing(star.animatedValue, {
-        toValue: height,
-        duration: 1500 + Math.random() * 1000,
+        toValue: height + 30,
+        duration: 1200 + Math.random() * 1000,
         useNativeDriver: true,
-      }).start();
+      }).start(() => {
+        // Optional: clean up finished stars
+        setStars((prev) => prev.filter((s) => s.id !== star.id));
+      });
     });
   };
 
@@ -78,17 +84,14 @@ const AddReviewScreen = ({ navigation }) => {
       return;
     }
 
-    // 🔥 Get current user
     const { data: { user }, error: userError } = await supabase.auth.getUser();
-    
+
     if (userError || !user) {
       Alert.alert('🚫 Error', 'User not logged in. Please sign in first.');
       return;
     }
 
     try {
-      console.log('Submitting review:', { user_id: user.id, selectedBook, rating, reviewText });
-
       const { error } = await supabase.from('book_reviews').insert([
         {
           user_id: user.id,
@@ -100,7 +103,6 @@ const AddReviewScreen = ({ navigation }) => {
 
       if (error) throw error;
 
-      // ✅ Review submitted successfully
       Animated.sequence([
         Animated.timing(buttonAnim, { toValue: 1.2, duration: 100, useNativeDriver: true }),
         Animated.timing(buttonAnim, { toValue: 1, duration: 100, useNativeDriver: true }),
@@ -108,12 +110,10 @@ const AddReviewScreen = ({ navigation }) => {
 
       Alert.alert('🔥 Boom! Review Submitted!', 'Your review just landed in the hall of fame!');
 
-      // Reset state
       setSelectedBook('');
       setReviewText('');
       setRating(0);
 
-      // Navigate back
       navigation.goBack();
     } catch (err) {
       Alert.alert('🚨 Submission Failed!', err.message);
@@ -145,7 +145,8 @@ const AddReviewScreen = ({ navigation }) => {
             <Picker.Item label="📗 Under the Same Stars - Jane Harper" value="Under the Same Stars" />
             <Picker.Item label="📙 The Heaven & Earth Grocery Store - James McBride" value="The Heaven & Earth Grocery Store" />
             <Picker.Item label="📕 Learning React - Alex Banks" value="Learning React" />
-            <Picker.Item label="📓 The Meadowbrook Murders - Jessica Goodman" value="The Meadowbrook Murders" />
+            <Picker.Item label="📒 The Meadowbrook Murders - Jessica Goodman" value="The Meadowbrook Murders" />
+            <Picker.Item label="📓 Malgudi Days - R.K.Narayan" value="Malgudi Days" />
           </Picker>
         </View>
 
@@ -181,6 +182,22 @@ const AddReviewScreen = ({ navigation }) => {
             <Text style={styles.buttonText}>Submit Your Review</Text>
           </Animated.View>
         </TouchableOpacity>
+
+        {/* 🌠 Star Shower Animation */}
+        {stars.map((star) => (
+          <Animated.View
+            key={star.id}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: star.x,
+              transform: [{ translateY: star.animatedValue }],
+              zIndex: -1,
+            }}
+          >
+            <MaterialCommunityIcons name="star-four-points" size={24} color="#FFD700" />
+          </Animated.View>
+        ))}
       </Animated.View>
     </LinearGradient>
   );

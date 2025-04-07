@@ -8,6 +8,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import * as Location from "expo-location";
 import { ActivityIndicator } from 'react-native';
 import { Linking } from 'react-native';
+import { supabase } from '../../supabaseConfig';
 
 
 const HomeScreen = ({ navigation }) => {
@@ -17,18 +18,38 @@ const HomeScreen = ({ navigation }) => {
   const [location, setLocation] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const [notification, setNotification] = useState(null);
+
+const handleNotification = () => {
+  setNotification('🔔 You will be notified when the book is released!');
+  setTimeout(() => setNotification(null), 3000);
+};
+
+
   const releaseDate = new Date('2025-05-18T00:00:00Z');
 
   const books = [
-    { title: 'Atomic Habits', author: 'James Clear', rating: 4.5, image: 'https://m.media-amazon.com/images/I/81bGKUa1e0L.jpg', screen: 'AtomicHabitsDetails' },
-    { title: 'The Heaven & Earth Grocery Store', author: 'James McBride', rating: 4.8, image: 'https://m.media-amazon.com/images/I/71gLNSLmIxL.SL1500.jpg', screen: 'HeavenDetails' },
-    { title: 'Learning React', author: 'Alex Banks', rating: 5.0, image: 'https://m.media-amazon.com/images/I/51ad7GkEzNL.jpg', screen: 'LearningReactDetailScreen' },
+    { 
+      title: 'Atomic Habits', author: 'James Clear', 
+      image: 'https://images-na.ssl-images-amazon.com/images/I/81bGKUa1e0L.jpg', 
+      screen: 'AtomicHabitsDetails', id: 1
+    },
+    { 
+      title: 'The Heaven & Earth Grocery Store', author: 'James McBride', 
+      image: 'https://m.media-amazon.com/images/I/71gLNSLmIxL._SL1500_.jpg', 
+      screen: 'HeavenDetails', id: 3
+    },
+    { 
+      title: 'Learning React', author: 'Alex Banks', 
+      image: 'https://m.media-amazon.com/images/I/51ad7GkEzNL.jpg', 
+      screen: 'LearningReactDetailScreen', id: 4
+    },
   ];
 
   const topReviews = [
-    { title: 'Atomic Habits', author: 'James Clear', rating: 4.5, image: 'https://m.media-amazon.com/images/I/81bGKUa1e0L.jpg', screen: 'AtomicHabitsDetails' },
-    { title: 'The Heaven & Earth Grocery Store', author: 'James McBride', rating: 4.8, image: 'https://m.media-amazon.com/images/I/71gLNSLmIxL.SL1500.jpg', screen: 'HeavenDetails' },
-    { title: 'Learning React', author: 'Alex Banks', rating: 5.0, image: 'https://m.media-amazon.com/images/I/51ad7GkEzNL.jpg', screen: 'LearningReactDetailScreen' },
+    { title: 'Malgudi Days', author: 'R.K.Narayan', image: 'https://www.startergroup.in/image/cache/catalog/demo/novels/md_9788185986173-1000x1000h.jpg', screen: 'MalgudiDaysDetailsScreen', id: 2, rating: null },
+    { title: 'Under the Same Stars', author: 'Jane Harper', image: 'https://m.media-amazon.com/images/I/81HcIAJnyQL._SL1500_.jpg', screen: 'UnderTheSameStarsDetails', id: 1, rating: null },
+    { title: 'The Meadowbrook Murders', author: 'Jessica Goodman', image: 'https://m.media-amazon.com/images/I/71KJMVYP+7L._SL1500_.jpg', screen: 'MeadowbrookMurdersDetails', id: 3, rating: null },
   ];
 
   useEffect(() => {
@@ -108,7 +129,14 @@ const HomeScreen = ({ navigation }) => {
           style={styles.gradient}
         >
     <View style={styles.container}>
+      {notification && (
+          <View style={styles.notification}>
+            <Text style={styles.notificationText}>{notification}</Text>
+            </View>
+        )}
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        
+
         {/* Header Section */}
         <Text style={styles.header}>Discover Your Next Favorite Book</Text>
 
@@ -122,7 +150,7 @@ const HomeScreen = ({ navigation }) => {
 
           {/* Animated Notification Button */}
           <Animated.View style={[styles.notifyButton, { transform: [{ scale: scaleAnim }] }]}>
-            <TouchableOpacity>
+            <TouchableOpacity  onPress={handleNotification}>
               <Text style={styles.notifyText}>Get Notified</Text>
             </TouchableOpacity>
           </Animated.View>
@@ -131,7 +159,12 @@ const HomeScreen = ({ navigation }) => {
         
 
         {/* Featured Books Section */}
-        <Text style={styles.sectionTitle}>📚 Featured Books</Text>
+        <TouchableOpacity style={styles.sectionHeader} onPress={() => navigation.navigate('Featured')}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Text style={styles.sectionTitle}>📚 Featured Books</Text>
+            <MaterialIcons name="arrow-forward-ios" size={20} color="#333" />
+            </View>
+        </TouchableOpacity>
         <FlatList
          horizontal
          data={books}
@@ -158,10 +191,15 @@ const HomeScreen = ({ navigation }) => {
 
 
         {/* Top Reviews Section */}
-        <Text style={styles.sectionTitle}>🌟 Top Reviews</Text>
+        <TouchableOpacity style={styles.sectionHeader} onPress={() => navigation.navigate('NewArrivals')}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Text style={styles.sectionTitle}>💡New Arrivals</Text>
+            <MaterialIcons name="arrow-forward-ios" size={20} color="#333" />
+            </View>
+        </TouchableOpacity>
         <FlatList
          horizontal
-         data={books}
+         data={topReviews}
          keyExtractor={(item) => item.title}
          renderItem={({ item }) => (
            <TouchableOpacity 
@@ -184,18 +222,7 @@ const HomeScreen = ({ navigation }) => {
         />
 
 
-        {/* Action Buttons */}
-        <View style={styles.actionButtons}>
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Featured')}>
-            <MaterialIcons name="star" size={24} color="white" />
-            <Text style={styles.buttonText}>Featured Books</Text>
-          </TouchableOpacity>
 
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('NewArrivals')}>
-            <MaterialIcons name="new-releases" size={24} color="white" />
-            <Text style={styles.buttonText}>New Arrivals</Text>
-          </TouchableOpacity>
-        </View>
 
         {/* Extra Actions */}
         <TouchableOpacity style={styles.buttonOutline} onPress={() => navigation.navigate('AddReview')}>
@@ -234,25 +261,36 @@ const styles = StyleSheet.create({
   },
   scrollViewContent: { padding: 20 },
   header: { fontSize: 26, fontWeight: 'bold', textAlign: 'center', color: '#2C3E50', marginBottom: 20 },
-  sectionTitle: { fontSize: 20, fontWeight: 'bold', marginBottom: 10, color: '#2980B9' },
+  sectionTitle: { fontSize: 20, fontWeight: 'bold', marginBottom: 10, color: '#247B9F' },
   upcomingReleases: { backgroundColor: '#fff', padding: 15, borderRadius: 10, elevation: 5, marginBottom: 20 },
   upcomingTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 10 },
   bookTitle: { fontWeight: 'bold', textAlign: 'center', fontSize: 16 },
   countdown: { fontSize: 16, color: '#E74C3C', marginTop: 5 },
   notifyButton: { backgroundColor: '#27AE60', padding: 10, borderRadius: 5, alignItems: 'center', marginTop: 10 },
   notifyText: { color: 'white', fontWeight: 'bold' },
+  notification: {
+    backgroundColor: '#27AE60',
+    padding: 10,
+    alignItems: 'center',
+    borderRadius: 5,
+  },
+  notificationText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  
   bookCard: { width: 150, backgroundColor: '#fff', borderRadius: 10, padding: 10, marginRight: 15, alignItems: 'center', elevation: 5 },
   bookImage: { width: 100, height: 150, borderRadius: 5, marginBottom: 10 },
   bookAuthor: { fontSize: 14, color: '#7F8C8D' },
   bookRating: { fontSize: 16, color: '#F39C12', marginTop: 5 },
   bookReview: { fontSize: 14, color: '#7F8C8D', marginTop: 5, textAlign: 'center' },
   actionButtons: { flexDirection: 'row', justifyContent: 'space-between', marginVertical: 20 },
-  button: { flexDirection: 'row', backgroundColor: '#2980B9', padding: 10, borderRadius: 5, alignItems: 'center', width: '45%' },
+  button: { flexDirection: 'row', backgroundColor: '#247B9F', padding: 10, borderRadius: 5, alignItems: 'center', width: '45%' },
   buttonText: { color: 'white', marginLeft: 10, fontWeight: 'bold' },
-  buttonOutline: { backgroundColor: '#fff', borderColor: '#2980B9', borderWidth: 1, padding: 12, borderRadius: 5, marginVertical: 10, alignItems: 'center' },
-  buttonOutlineText: { color: '#2980B9', fontWeight: 'bold' },locationBox: { 
+  buttonOutline: { backgroundColor: '#fff', borderColor: '#247B9F', borderWidth: 1, padding: 12, borderRadius: 5, marginVertical: 10, alignItems: 'center' },
+  buttonOutlineText: { color: '#247B9F', fontWeight: 'bold' },locationBox: { 
     backgroundColor: '#fff', 
-    borderColor: '#2980B9', 
+    borderColor: '#247B9F', 
     borderWidth: 1, 
     padding: 12, 
     borderRadius: 5, 
@@ -263,13 +301,13 @@ const styles = StyleSheet.create({
   },
   
   locationText: { 
-    color: '#2980B9', 
+    color: '#247B9F', 
     fontWeight: 'bold', 
     marginLeft: 10 
   },
   
   errorText: { color: "red", fontSize: 16 },
-  fab: { position: 'absolute', bottom: 20, right: 20, backgroundColor: '#2980B9', width: 60, height: 60, borderRadius: 30, alignItems: 'center', justifyContent: 'center' },
+  fab: { position: 'absolute', bottom: 20, right: 20, backgroundColor: '#247B9F', width: 60, height: 60, borderRadius: 30, alignItems: 'center', justifyContent: 'center' },
 });
 
 export default HomeScreen;

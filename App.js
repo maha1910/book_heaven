@@ -17,6 +17,7 @@ import UnderTheSameStarsDetailsScreen from './src/screens/UnderTheSameStarsDetai
 import HeavenDetailsScreen from './src/screens/HeavenDetailsScreen';
 import LearningReactDetailScreen from './src/screens/LearningReactDetailScreen';
 import MeadowbrookMurdersDetailsScreen from './src/screens/MeadowbrookMurdersDetailsScreen';
+import MalgudiDaysDetailsScreen from './src/screens/MalgudiDaysDetailsScreen';
 
 const Stack = createStackNavigator();
 
@@ -70,6 +71,7 @@ const App = () => {
         <Stack.Screen name="HeavenDetails" component={HeavenDetailsScreen} options={bounceEffect} />
         <Stack.Screen name="LearningReactDetailScreen" component={LearningReactDetailScreen} options={scaleEffect} />
         <Stack.Screen name="MeadowbrookMurdersDetails" component={MeadowbrookMurdersDetailsScreen} options={slideEffect} />
+        <Stack.Screen name="MalgudiDaysDetailsScreen" component={MalgudiDaysDetailsScreen} options={slideEffect} />
       </Stack.Navigator>
     </NavigationContainer>
   );

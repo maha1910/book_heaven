@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Image,
+  TouchableOpacity,
+  Dimensions,
+  ActivityIndicator,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { supabase } from '../../supabaseConfig';
@@ -9,15 +18,39 @@ const { width } = Dimensions.get('window');
 const NewArrivalsScreen = ({ navigation }) => {
   const [newArrivals, setNewArrivals] = useState([
     {
-      title: 'Under the Same Stars', author: 'Jane Harper', image: 'https://m.media-amazon.com/images/I/81HcIAJnyQL._SL1500_.jpg', screen: 'UnderTheSameStarsDetails', id: 1, rating: null
+      id: 1,
+      title: 'Malgudi Days',
+      author: 'R.K.Narayan',
+      image: 'https://www.startergroup.in/image/cache/catalog/demo/novels/md_9788185986173-1000x1000h.jpg',
+      screen: 'MalgudiDaysDetailsScreen',
+      rating: null,
     },
     {
-      title: 'The Heaven & Earth Grocery Store', author: 'James McBride', image: 'https://m.media-amazon.com/images/I/71gLNSLmIxL._SL1500_.jpg', screen: 'HeavenDetails', id: 2, rating: null
+      id: 2,
+      title: 'Under the Same Stars',
+      author: 'Jane Harper',
+      image: 'https://m.media-amazon.com/images/I/81HcIAJnyQL._SL1500_.jpg',
+      screen: 'UnderTheSameStarsDetails',
+      rating: null,
     },
     {
-      title: 'The Meadowbrook Murders', author: 'Jessica Goodman', image: 'https://m.media-amazon.com/images/I/71KJMVYP+7L._SL1500_.jpg', screen: 'MeadowbrookMurdersDetails', id: 3, rating: null
+      id: 3,
+      title: 'The Heaven & Earth Grocery Store',
+      author: 'James McBride',
+      image: 'https://m.media-amazon.com/images/I/71gLNSLmIxL._SL1500_.jpg',
+      screen: 'HeavenDetails',
+      rating: null,
+    },
+    {
+      id: 4,
+      title: 'The Meadowbrook Murders',
+      author: 'Jessica Goodman',
+      image: 'https://m.media-amazon.com/images/I/71KJMVYP+7L._SL1500_.jpg',
+      screen: 'MeadowbrookMurdersDetails',
+      rating: null,
     },
   ]);
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -49,9 +82,9 @@ const NewArrivalsScreen = ({ navigation }) => {
   }, []);
 
   return (
-    <LinearGradient 
+    <LinearGradient
       colors={['#D7C49EFF', '#343148FF']}
-      start={{ x: 0.5, y: 0 }} 
+      start={{ x: 0.5, y: 0 }}
       end={{ x: 0.5, y: 1.2 }}
       style={styles.gradient}
     >
