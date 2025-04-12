@@ -30,37 +30,45 @@ const SignupScreen = ({ navigation }) => {
       Alert.alert('Error', 'You must agree to the terms and conditions.');
       return;
     }
-
+  
     try {
-      // Signup user in Supabase Auth
-      const { data, error } = await supabase.auth.signUp({ email, password });
-
+      // 🔥 Pass username into user_metadata
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            username: username,
+          },
+        },
+      });
+  
       if (error) {
         console.error('Supabase Auth Error:', error.message);
         Alert.alert('Signup Failed', error.message);
         return;
       }
-
+  
       const user = data?.user;
-
+  
       if (!user) {
         Alert.alert('Signup Successful', 'Check your email for verification before logging in.');
         return;
       }
-
+  
       console.log('User ID:', user.id);
-
-      // Insert user into the 'users' table with the correct UID
+  
+      // ✅ Optional: Save to your own 'users' table (if you're using it)
       const { error: insertError } = await supabase
         .from('users')
         .insert([{ id: user.id, username, email }]);
-
+  
       if (insertError) {
         console.error('Database Insert Error:', insertError.message);
         Alert.alert('Signup Failed', 'Could not save user in database. Try again later.');
         return;
       }
-
+  
       Alert.alert('Success', 'Account created! Verify your email before logging in.');
       navigation.navigate('Login');
     } catch (err) {
@@ -68,6 +76,7 @@ const SignupScreen = ({ navigation }) => {
       Alert.alert('Signup Failed', 'Something went wrong. Please try again.');
     }
   };
+  
 
   return (
     <LinearGradient colors={['#00C6FF', '#0072FF']} style={styles.container}>

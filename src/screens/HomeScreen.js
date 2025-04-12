@@ -9,7 +9,9 @@ import * as Location from "expo-location";
 import { ActivityIndicator } from 'react-native';
 import { Linking } from 'react-native';
 import { supabase } from '../../supabaseConfig';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
+const Tab = createBottomTabNavigator();
 
 const HomeScreen = ({ navigation }) => {
   const [countdown, setCountdown] = useState('');
@@ -116,6 +118,38 @@ const handleNotification = () => {
     Linking.openURL(url).catch((err) => console.error("❌ Failed to open map:", err));
   };
   
+  useEffect(() => {
+    const fetchRatingsForAllBooks = async () => {
+      setLoading(true);
+      
+      // Clone the original topReviews array
+      const reviewsWithRatings = await Promise.all(
+        topReviews.map(async (book) => {
+          const { data, error } = await supabase
+            .from('book_reviews')
+            .select('rating')
+            .eq('book_name', book.title); // Assuming 'title' matches 'book_name'
+  
+          if (error) {
+            console.error(`Error fetching rating for ${book.title}:`, error);
+            return { ...book, rating: 'N/A' };
+          }
+  
+          const totalRatings = data.length;
+          const sumRatings = data.reduce((acc, review) => acc + review.rating, 0);
+          const avgRating = totalRatings ? (sumRatings / totalRatings).toFixed(1) : 'No ratings';
+  
+          return { ...book, rating: avgRating };
+        })
+      );
+  
+      setTopReviews(reviewsWithRatings); // Update state with ratings
+      setLoading(false);
+    };
+  
+    fetchRatingsForAllBooks();
+  }, []);
+  
   
 
   if (loading) return <ActivityIndicator size="large" color="blue" />;
@@ -123,62 +157,79 @@ const handleNotification = () => {
 
   return (
     <LinearGradient 
-          colors={['#91F1EF', '#FFD5E0']} // Purple to Blue gradient
-          start={{ x: 0.5, y: 0 }}  
-          end={{ x: 0.5, y: 0.7 }}  
-          style={styles.gradient}
-        >
-    <View style={styles.container}>
-      {notification && (
+      colors={['#91F1EF', '#FFD5E0']}
+      start={{ x: 0.5, y: 0 }}
+      end={{ x: 0.5, y: 0.7 }}
+      style={styles.gradient}
+    >
+      <View style={styles.container}>
+        {notification && (
           <View style={styles.notification}>
             <Text style={styles.notificationText}>{notification}</Text>
-            </View>
+          </View>
         )}
-      <ScrollView contentContainerStyle={styles.scrollViewContent}>
-        
-
-        {/* Header Section */}
-        <Text style={styles.header}>Discover Your Next Favorite Book</Text>
-
-        {/* Future of AI Section */}
-        <Animated.View style={[styles.upcomingReleases, { opacity: fadeAnim }]}>
-          <Text style={styles.upcomingTitle}>🚀 Upcoming Release</Text>
-          <Text style={styles.bookTitle}>Future of AI</Text>
-          <Text>Author: Dr. Sarah Connor</Text>
-          <Text>Release Date: May 18, 2025</Text>
-          <Text style={styles.countdown}>⏳ {countdown}</Text>
-
-          {/* Animated Notification Button */}
-          <Animated.View style={[styles.notifyButton, { transform: [{ scale: scaleAnim }] }]}>
-            <TouchableOpacity  onPress={handleNotification}>
-              <Text style={styles.notifyText}>Get Notified</Text>
-            </TouchableOpacity>
+  
+        <ScrollView contentContainerStyle={styles.scrollViewContent}>
+          <Text style={styles.header}>Discover Your Next Favorite Book</Text>
+  
+          {/* Upcoming Release */}
+          <Animated.View style={[styles.upcomingReleases, { opacity: fadeAnim }]}>
+            <Text style={styles.upcomingTitle}>🚀 Upcoming Release</Text>
+            <Text style={styles.bookTitle}>Future of AI</Text>
+            <Text>Author: Dr. Sarah Connor</Text>
+            <Text>Release Date: May 18, 2025</Text>
+            <Text style={styles.countdown}>⏳ {countdown}</Text>
+  
+            <Animated.View style={[styles.notifyButton, { transform: [{ scale: scaleAnim }] }]}>
+              <TouchableOpacity onPress={handleNotification}>
+                <Text style={styles.notifyText}>Get Notified</Text>
+              </TouchableOpacity>
+            </Animated.View>
           </Animated.View>
-        </Animated.View>
-
-        
-
-        {/* Featured Books Section */}
-        <TouchableOpacity style={styles.sectionHeader} onPress={() => navigation.navigate('Featured')}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Text style={styles.sectionTitle}>📚 Featured Books</Text>
-            <MaterialIcons name="arrow-forward-ios" size={20} color="#333" />
+  
+          {/* Featured Books */}
+          <TouchableOpacity style={styles.sectionHeader} onPress={() => navigation.navigate('Featured')}>
+            <View style={styles.sectionHeaderRow}>
+              <Text style={styles.sectionTitle}>📚 Featured Books</Text>
+              <MaterialIcons name="arrow-forward-ios" size={20} color="#333" />
             </View>
-        </TouchableOpacity>
-        <FlatList
-         horizontal
-         data={books}
-         keyExtractor={(item) => item.title}
-         renderItem={({ item }) => (
-           <TouchableOpacity 
-             style={styles.bookCard} 
-             onPress={() => {
-               if (item.screen) {
-                 navigation.navigate(item.screen);
-                } else {
-                  console.warn(`No screen defined for ${item.title}`);
-                }
-              }}
+          </TouchableOpacity>
+  
+          <FlatList
+            horizontal
+            data={books}
+            keyExtractor={(item) => item.title}
+            renderItem={({ item }) => (
+              <TouchableOpacity 
+                style={styles.bookCard} 
+                onPress={() => item.screen ? navigation.navigate(item.screen) : console.warn(`No screen defined for ${item.title}`)}
+              >
+                <Image source={{ uri: item.image }} style={styles.bookImage} />
+                <Text style={styles.bookTitle}>{item.title}</Text>
+                <Text style={styles.bookAuthor}>by {item.author}</Text>
+                <Text style={styles.bookRating}>⭐ {item.rating}</Text>
+                
+              </TouchableOpacity>
+            )}
+            showsHorizontalScrollIndicator={false}
+          />
+  
+          {/* New Arrivals */}
+          <TouchableOpacity style={styles.sectionHeader} onPress={() => navigation.navigate('NewArrivals')}>
+            <View style={styles.sectionHeaderRow}>
+              <Text style={styles.sectionTitle}>💡 New Arrivals</Text>
+              <MaterialIcons name="arrow-forward-ios" size={20} color="#333" />
+            </View>
+          </TouchableOpacity>
+  
+          <FlatList
+            horizontal
+            data={topReviews}
+            keyExtractor={(item) => item.title}
+            renderItem={({ item }) => (
+              <TouchableOpacity 
+                style={styles.bookCard} 
+                onPress={() => item.screen ? navigation.navigate(item.screen) : console.warn(`No screen defined for ${item.title}`)}
               >
                 <Image source={{ uri: item.image }} style={styles.bookImage} />
                 <Text style={styles.bookTitle}>{item.title}</Text>
@@ -186,80 +237,77 @@ const handleNotification = () => {
                 <Text style={styles.bookRating}>⭐ {item.rating}</Text>
               </TouchableOpacity>
             )}
-          showsHorizontalScrollIndicator={false}
-        />
+            showsHorizontalScrollIndicator={false}
+          />
 
-
-        {/* Top Reviews Section */}
-        <TouchableOpacity style={styles.sectionHeader} onPress={() => navigation.navigate('NewArrivals')}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Text style={styles.sectionTitle}>💡New Arrivals</Text>
-            <MaterialIcons name="arrow-forward-ios" size={20} color="#333" />
-            </View>
-        </TouchableOpacity>
-        <FlatList
-         horizontal
-         data={topReviews}
-         keyExtractor={(item) => item.title}
-         renderItem={({ item }) => (
-           <TouchableOpacity 
-             style={styles.bookCard} 
-             onPress={() => {
-               if (item.screen) {
-                 navigation.navigate(item.screen);
-                } else {
-                  console.warn(`No screen defined for ${item.title}`);
-                }
-              }}
-              >
-                <Image source={{ uri: item.image }} style={styles.bookImage} />
-                <Text style={styles.bookTitle}>{item.title}</Text>
-                <Text style={styles.bookAuthor}>by {item.author}</Text>
-                <Text style={styles.bookRating}>⭐ {item.rating}</Text>
+  
+          {/* Location */}
+          <View style={styles.container}>
+            {location ? (
+              <TouchableOpacity style={styles.locationBox} onPress={openMaps}>
+                <Ionicons name="location" size={20} color="white" />
+                <Text style={styles.locationText}>📌 Location of Nearest Book Fair</Text>
               </TouchableOpacity>
+            ) : (
+              <Text style={styles.errorText}>❌ Location not available</Text>
             )}
-          showsHorizontalScrollIndicator={false}
-        />
-
-
-
-
-        {/* Extra Actions */}
-        <TouchableOpacity style={styles.buttonOutline} onPress={() => navigation.navigate('AddReview')}>
-          <Text style={styles.buttonOutlineText}>✍ Add Review</Text>
+          </View>
+        </ScrollView>
+  
+        {/* FAB - Floating Search Button */}
+        <TouchableOpacity style={styles.fabCenter} onPress={() => navigation.navigate('Search')}>
+          <Ionicons name="search" size={32} color="white" />
         </TouchableOpacity>
-
-        <TouchableOpacity style={styles.buttonOutline} onPress={() => navigation.navigate('RecommendBooks')}>
-          <Text style={styles.buttonOutlineText}>📖 Recommend Books</Text>
+      </View>
+  
+      {/* Bottom Tab Bar */}
+      <View style={styles.bottomTabBar}>
+        <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('Home')}>
+          <MaterialIcons name="home" size={26} color="#247B9F" />
+          <Text style={styles.navText}>Home</Text>
         </TouchableOpacity>
-
-        <View style={styles.container}>
-        {location ? (
-          <TouchableOpacity style={styles.locationBox} onPress={openMaps}>
-          <Ionicons name="location" size={20} color="white" />
-          <Text style={styles.locationText}>📌 Location of Nearest Book Fair    </Text>
+  
+        <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('AddReview')}>
+          <MaterialIcons name="rate-review" size={26} color="#247B9F" />
+          <Text style={styles.navText}>Review</Text>
         </TouchableOpacity>
-        ) : (
-        <Text style={styles.errorText}>❌ Location not available</Text>
-        )}
-        </View>
-      </ScrollView>
-
-      {/* Floating Action Button */}
-      <TouchableOpacity style={styles.fab} onPress={() => navigation.navigate('Search')}>
-        <Ionicons name="search" size={28} color="white" />
-      </TouchableOpacity>
-
-    </View>
+  
+        {/* Space in middle is left empty for FAB */}
+        <View style={{ width: 65 }} />
+  
+        <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('RecommendBooks')}>
+          <MaterialIcons name="menu-book" size={26} color="#247B9F" />
+          <Text style={styles.navText}>Suggest</Text>
+        </TouchableOpacity>
+  
+        <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('Account')}>
+          <MaterialIcons name="person" size={26} color="#247B9F" />
+          <Text style={styles.navText}>Account</Text>
+        </TouchableOpacity>
+      </View>
     </LinearGradient>
   );
+  
 };
 
 const styles = StyleSheet.create({
   gradient: {
     flex: 1,
   },
-  scrollViewContent: { padding: 20 },
+  scrollViewContent: { padding: 20 ,paddingBottom:80},
+  sectionHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+    paddingHorizontal: 10,
+  },
+  sectionHeader: {
+    width: '100%',
+    marginTop: 20,
+    paddingVertical: 10,
+  },
+  
   header: { fontSize: 26, fontWeight: 'bold', textAlign: 'center', color: '#2C3E50', marginBottom: 20 },
   sectionTitle: { fontSize: 20, fontWeight: 'bold', marginBottom: 10, color: '#247B9F' },
   upcomingReleases: { backgroundColor: '#fff', padding: 15, borderRadius: 10, elevation: 5, marginBottom: 20 },
@@ -300,14 +348,59 @@ const styles = StyleSheet.create({
     justifyContent: 'center' 
   },
   
+  
   locationText: { 
     color: '#247B9F', 
     fontWeight: 'bold', 
     marginLeft: 10 
   },
   
+  bottomTabBar: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    paddingVertical: 10,
+    justifyContent: 'space-around',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    elevation: 10,
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+  },
+  
+  tabItem: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
+  },
+  
+  fabCenter: {
+    width: 65,
+    height: 65,
+    borderRadius: 32.5,
+    backgroundColor: '#247B9F',
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    bottom: 20, // makes it overlap the bottom bar
+    left: '50%',
+    marginLeft: -32.5, // half of width
+    elevation: 10, // Android shadow
+    zIndex: 10,
+  
+    // iOS shadow
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+  
+    borderWidth: 4,
+    borderColor: '#fff', // To create a cutout look on the white bottom bar
+  },  
   errorText: { color: "red", fontSize: 16 },
-  fab: { position: 'absolute', bottom: 20, right: 20, backgroundColor: '#247B9F', width: 60, height: 60, borderRadius: 30, alignItems: 'center', justifyContent: 'center' },
+  
 });
 
 export default HomeScreen;

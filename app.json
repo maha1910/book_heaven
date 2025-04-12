@@ -20,7 +20,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.mahalakshmi_b.BookApp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -32,6 +33,11 @@
           "animate": true
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "3734ffb0-2bfc-4bb0-b014-5911af563176"
+      }
+    }
   }
 }
