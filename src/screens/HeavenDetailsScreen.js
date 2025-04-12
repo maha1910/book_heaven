@@ -4,7 +4,6 @@ import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { supabase } from '../../supabaseConfig';
 
-// Ensure correct image path
 const heavenAndEarthCover = require('../../assets/heaven-and-earth-cover.jpg');
 
 const HeavenDetailsScreen = () => {
@@ -39,7 +38,7 @@ const HeavenDetailsScreen = () => {
 
   return (
     <LinearGradient
-      colors={['#F2AA4CFF', '#101820FF']}  // Smooth contrast for elegance
+      colors={['#F2AA4CFF', '#101820FF']}
       start={{ x: 0.5, y: 0 }}
       end={{ x: 0.5, y: 0.7 }}
       style={styles.gradient}
@@ -73,9 +72,23 @@ const HeavenDetailsScreen = () => {
           <Text style={styles.rating}>{averageRating} / 5</Text>
         )}
 
-        {/* Back to Home Button */}
+        {/* Buttons */}
         <View style={styles.buttonContainer}>
-          <Button title="Back to Home" onPress={() => navigation.navigate('Home')} color="#007AFF" />
+          <Button
+            title="See Reviews"
+            color="#32CD32"
+            onPress={() =>
+              navigation.navigate('BookReviews', { bookName: 'The Heaven & Earth Grocery Store' })
+            }
+          />
+        </View>
+
+        <View style={styles.buttonContainer}>
+          <Button
+            title="Back to Home"
+            onPress={() => navigation.navigate('Home')}
+            color="#007AFF"
+          />
         </View>
       </ScrollView>
     </LinearGradient>
@@ -135,8 +148,8 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   buttonContainer: {
-    marginTop: 20,
-    marginBottom: 30,
+    marginTop: 15,
+    marginBottom: 10,
   },
 });
 

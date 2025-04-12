@@ -21,6 +21,7 @@ import MalgudiDaysDetailsScreen from './src/screens/MalgudiDaysDetailsScreen';
 import AccountScreen from './src/screens/Account';
 import UserReviewsScreen from './src/screens/UserReviewsScreen';
 import UserRecommendationsScreen from './src/screens/UserRecommendationsScreen';
+import BookReviewsScreen from './src/screens/BookReviewsScreen';
 
 const Stack = createStackNavigator();
 
@@ -78,6 +79,7 @@ const App = () => {
         <Stack.Screen name="Account" component={AccountScreen} options={scaleEffect} />
         <Stack.Screen name="UserReviews" component={UserReviewsScreen} />
         <Stack.Screen name="UserRecommendations" component={UserRecommendationsScreen} />
+        <Stack.Screen name="BookReviews" component={BookReviewsScreen} />
 
       </Stack.Navigator>
     </NavigationContainer>

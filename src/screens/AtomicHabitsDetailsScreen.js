@@ -36,7 +36,7 @@ const AtomicHabitsDetailsScreen = () => {
 
   return (
     <LinearGradient
-      colors={['#F2AA4CFF', '#101820FF']} // Soft orange to deep purple for contrast
+      colors={['#F2AA4CFF', '#101820FF']}
       start={{ x: 0.5, y: 0 }}
       end={{ x: 0.5, y: 0.7 }}
       style={styles.gradient}
@@ -69,14 +69,18 @@ const AtomicHabitsDetailsScreen = () => {
           • Make habits easy, attractive, and satisfying.
         </Text>
 
-        <Text style={styles.sectionTitle}>⭐ Rating:</Text>
+        <Text style={styles.sectionTitle}>⭐ Average Rating:</Text>
         {loading ? (
           <ActivityIndicator size="large" color="#FFD700" />
         ) : (
           <Text style={styles.rating}>{averageRating} / 5</Text>
         )}
 
-        {/* Back to Home Button */}
+        {/* Buttons */}
+        <View style={styles.buttonContainer}>
+          <Button title="See Reviews" onPress={() => navigation.navigate('BookReviews', { bookName: 'Atomic Habits' })} color="#FFA500" />
+        </View>
+
         <View style={styles.buttonContainer}>
           <Button title="Back to Home" onPress={() => navigation.navigate('Home')} color="#007AFF" />
         </View>
@@ -147,8 +151,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   buttonContainer: {
-    marginTop: 20,
-    marginBottom: 30,
+    marginTop: 15,
   },
 });
 

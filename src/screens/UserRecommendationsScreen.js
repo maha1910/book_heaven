@@ -1,50 +1,95 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const UserRecommendationsScreen = ({ route }) => {
   const { recommendedBooks } = route.params;
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Your Recommendations</Text>
-      {recommendedBooks.length === 0 ? (
-        <Text>No recommendations found.</Text>
-      ) : (
-        recommendedBooks.map((book, index) => (
-          <View key={index} style={styles.card}>
-            <Text style={styles.bookTitle}>{book.book_title}</Text>
-            <Text style={styles.reason}>{book.reason || 'No reason provided.'}</Text>
+    <LinearGradient
+      colors={['#a18cd1', '#fbc2eb']}
+      start={{ x: 0.2, y: 0 }}
+      end={{ x: 0.8, y: 1 }}
+      style={{ flex: 1 }}
+    >
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.title}>✨ Your Book Recommendations</Text>
+
+        {recommendedBooks.length === 0 ? (
+          <View style={styles.noDataContainer}>
+            <Text style={styles.noDataText}>You haven’t received any recommendations yet.</Text>
           </View>
-        ))
-      )}
-    </ScrollView>
+        ) : (
+          recommendedBooks.map((book, index) => (
+            <LinearGradient
+              key={index}
+              colors={['#e1bee7', '#d1c4e9']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.gradientCard}
+            >
+              <View style={styles.cardInner}>
+                <Text style={styles.bookTitle}>{book.book_title}</Text>
+                <Text style={styles.reason}>
+                  {book.recommendation_text || 'No reason provided.'}
+                </Text>
+              </View>
+            </LinearGradient>
+          ))
+        )}
+      </ScrollView>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     padding: 20,
+    paddingBottom: 60,
   },
   title: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 15,
+    fontSize: 28,
+    fontWeight: '800',
+    color: '#333',
+    marginBottom: 25,
+    textAlign: 'center',
   },
-  card: {
-    backgroundColor: '#e8f0fe',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 10,
+  noDataContainer: {
+    marginTop: 50,
+    alignItems: 'center',
+  },
+  noDataText: {
+    fontSize: 17,
+    color: '#666',
+    textAlign: 'center',
+    paddingHorizontal: 20,
+  },
+  gradientCard: {
+    borderRadius: 18,
+    marginBottom: 20,
+    padding: 2,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  cardInner: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 18,
   },
   bookTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#2b2b2b',
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#222',
+    marginBottom: 8,
   },
   reason: {
-    fontSize: 14,
+    fontSize: 15,
     color: '#555',
-    marginTop: 5,
+    lineHeight: 22,
+    textAlign: 'justify',
   },
 });
 

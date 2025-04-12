@@ -30,29 +30,31 @@ const handleNotification = () => {
 
   const releaseDate = new Date('2025-05-18T00:00:00Z');
 
-  const books = [
+  const [books, setBooks] = useState([
     { 
       title: 'Atomic Habits', author: 'James Clear', 
       image: 'https://images-na.ssl-images-amazon.com/images/I/81bGKUa1e0L.jpg', 
-      screen: 'AtomicHabitsDetails', id: 1
+      screen: 'AtomicHabitsDetails', id: 1, rating: null 
     },
     { 
       title: 'The Heaven & Earth Grocery Store', author: 'James McBride', 
       image: 'https://m.media-amazon.com/images/I/71gLNSLmIxL._SL1500_.jpg', 
-      screen: 'HeavenDetails', id: 3
+      screen: 'HeavenDetails', id: 3, rating: null 
     },
     { 
       title: 'Learning React', author: 'Alex Banks', 
       image: 'https://m.media-amazon.com/images/I/51ad7GkEzNL.jpg', 
-      screen: 'LearningReactDetailScreen', id: 4
+      screen: 'LearningReactDetailScreen', id: 4, rating: null 
     },
-  ];
+  ]);
+  
 
-  const topReviews = [
+  const [topReviews, setTopReviews] = useState([
     { title: 'Malgudi Days', author: 'R.K.Narayan', image: 'https://www.startergroup.in/image/cache/catalog/demo/novels/md_9788185986173-1000x1000h.jpg', screen: 'MalgudiDaysDetailsScreen', id: 2, rating: null },
     { title: 'Under the Same Stars', author: 'Jane Harper', image: 'https://m.media-amazon.com/images/I/81HcIAJnyQL._SL1500_.jpg', screen: 'UnderTheSameStarsDetails', id: 1, rating: null },
     { title: 'The Meadowbrook Murders', author: 'Jessica Goodman', image: 'https://m.media-amazon.com/images/I/71KJMVYP+7L._SL1500_.jpg', screen: 'MeadowbrookMurdersDetails', id: 3, rating: null },
-  ];
+  ]);
+  
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -117,6 +119,35 @@ const handleNotification = () => {
     const url = "https://maps.app.goo.gl/DS7G1zooDKab4xn49?g_st=awb".trim();
     Linking.openURL(url).catch((err) => console.error("❌ Failed to open map:", err));
   };
+  
+  useEffect(() => {
+    const fetchRatingsForBooks = async () => {
+      const booksWithRatings = await Promise.all(
+        books.map(async (book) => {
+          const { data, error } = await supabase
+            .from('book_reviews')
+            .select('rating')
+            .eq('book_name', book.title); // Assuming book_name matches book.title
+  
+          if (error) {
+            console.error(`Error fetching rating for ${book.title}:`, error);
+            return { ...book, rating: 'N/A' };
+          }
+  
+          const totalRatings = data.length;
+          const sumRatings = data.reduce((acc, review) => acc + review.rating, 0);
+          const avgRating = totalRatings ? (sumRatings / totalRatings).toFixed(1) : 'No ratings';
+  
+          return { ...book, rating: avgRating };
+        })
+      );
+  
+      setBooks(booksWithRatings);
+    };
+  
+    fetchRatingsForBooks();
+  }, []);
+  
   
   useEffect(() => {
     const fetchRatingsForAllBooks = async () => {

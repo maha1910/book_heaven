@@ -38,33 +38,40 @@ const FeaturedScreen = ({ navigation }) => {
     const fetchRatings = async () => {
       setLoading(true);
       const ratingsData = {};
-
+  
       for (const book of featuredBooks) {
         const { data, error } = await supabase
           .from('book_reviews')
           .select('rating')
           .eq('book_name', book.title);
-
+  
         if (error) {
           console.error(`Error fetching rating for ${book.title}:`, error);
           continue;
         }
-
+  
         const totalRatings = data.length;
-        const avgRating = totalRatings ? (data.reduce((acc, review) => acc + review.rating, 0) / totalRatings).toFixed(1) : 'No ratings';
-        ratingsData[book.title] = avgRating === 'No ratings' ? 0 : parseFloat(avgRating);
+        const avgRating = totalRatings 
+          ? data.reduce((acc, review) => acc + review.rating, 0) / totalRatings 
+          : 'No ratings';
+  
+        // Save raw decimal (e.g. 4.666666) or 0 if no ratings
+        ratingsData[book.title] = avgRating === 'No ratings' ? 0 : avgRating;
       }
-
+  
       setBookRatings(ratingsData);
-
-      const sorted = [...featuredBooks].sort((a, b) => (ratingsData[b.title] || 0) - (ratingsData[a.title] || 0));
+  
+      const sorted = [...featuredBooks].sort(
+        (a, b) => (ratingsData[b.title] || 0) - (ratingsData[a.title] || 0)
+      );
       setSortedBooks(sorted);
-
+  
       setLoading(false);
     };
-
+  
     fetchRatings();
   }, []);
+  
 
   return (
     <LinearGradient 
@@ -88,7 +95,7 @@ const FeaturedScreen = ({ navigation }) => {
                 <View style={styles.ratingContainer}>
                   <Ionicons name="star" size={16} color="gold" />
                   <Text style={styles.rating}>
-                    {bookRatings[item.title] || 'No ratings'}
+                  {bookRatings[item.title] ? bookRatings[item.title].toFixed(1) : 'No ratings'}
                   </Text>
                 </View>
               </View>

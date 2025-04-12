@@ -112,7 +112,7 @@ const LoginScreen = ({ navigation }) => {
 
           {/* Login Button */}
           <TouchableOpacity style={styles.button} onPress={handleLogin}>
-            <Text style={styles.buttonText}>Login</Text>
+            <Text style={styles.buttonText}>Log-in</Text>
           </TouchableOpacity>
 
           {/* Social Media Login */}
