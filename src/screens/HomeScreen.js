@@ -290,7 +290,7 @@ const handleNotification = () => {
           <Ionicons name="search" size={32} color="white" />
         </TouchableOpacity>
       </View>
-  
+         
       {/* Bottom Tab Bar */}
       <View style={styles.bottomTabBar}>
         <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('Home')}>
