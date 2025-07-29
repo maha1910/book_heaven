@@ -121,6 +121,8 @@ const AddReviewScreen = ({ navigation }) => {
       Alert.alert('🚨 Submission Failed!', err.message);
       console.error('❌ Review Submission Error:', err);
     }
+
+    await sendNewReviewEmails(currentUser.email, bookName);
   };
 
   return (
