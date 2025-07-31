@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, Button, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { supabase } from '../../supabaseConfig';
@@ -45,35 +45,43 @@ const LearningReactDetailScreen = () => {
     >
       <ScrollView contentContainerStyle={styles.container}>
         <Image source={learningReactCover} style={styles.bookCover} />
-        
+
         <Text style={styles.title}>Learning React</Text>
+        <Text style={styles.subtitle}>A Modern Approach to React Development</Text>
         <Text style={styles.author}>Author: Alex Banks</Text>
         <Text style={styles.year}>📅 Published: 2020</Text>
         <Text style={styles.pages}>📖 Pages: 350</Text>
 
         <Text style={styles.sectionTitle}>📜 Summary:</Text>
         <Text style={styles.description}>
-          *Learning React* is a hands-on guide for building modern web applications. The book covers React fundamentals,
+          "Learning React" is a hands-on guide for building modern web applications. The book covers React fundamentals,
           hooks, state management, and best practices for scalable applications.
         </Text>
 
         <Text style={styles.sectionTitle}>✨ Key Takeaways:</Text>
         <Text style={styles.description}>
-          - Understand the React component lifecycle{"\n"}
-          - Learn about React Hooks for state and effects{"\n"}
-          - Manage global state efficiently with Context and Redux{"\n"}
-          - Build performant and scalable React apps
+          • Understand the React component lifecycle{"\n"}
+          • Learn about React Hooks for state and effects{"\n"}
+          • Manage global state efficiently with Context and Redux{"\n"}
+          • Build performant and scalable React apps
         </Text>
 
-        <Text style={styles.sectionTitle}>⭐ Rating:</Text>
-        {loading ? (
-          <ActivityIndicator size="large" color="#FFD700" />
-        ) : (
-          <Text style={styles.rating}>{averageRating} / 5</Text>
-        )}
+        <View style={styles.ratingRow}>
+          <Text style={styles.sectionTitle}>⭐ Rating:</Text>
+          {loading ? (
+            <ActivityIndicator size="small" color="#FFD700" />
+          ) : (
+            <Text style={styles.rating}>{averageRating} / 5</Text>
+          )}
+          <TouchableOpacity onPress={() => navigation.navigate('BookReviews', { bookName: 'Learning React' })}>
+            <Text style={styles.seeReviews}>See Reviews</Text>
+          </TouchableOpacity>
+        </View>
 
         <View style={styles.buttonContainer}>
-          <Button title="Back to Home" onPress={() => navigation.navigate('Home')} color="#007AFF" />
+          <TouchableOpacity onPress={() => navigation.navigate('Home')} style={styles.homeButton}>
+            <Text style={styles.homeButtonText}>Back to Home</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </LinearGradient>
@@ -99,6 +107,13 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
   },
+  subtitle: {
+    fontSize: 16,
+    fontStyle: 'italic',
+    color: '#FFD700',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
   author: {
     fontSize: 18,
     color: '#f5f5f5',
@@ -113,28 +128,50 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#f5f5f5',
     textAlign: 'center',
+    marginBottom: 10,
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     color: 'white',
-    marginVertical: 10,
   },
   description: {
     fontSize: 16,
     lineHeight: 22,
     color: '#f5f5f5',
+    marginBottom: 10,
+  },
+  ratingRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginVertical: 10,
   },
   rating: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#FFD700',
-    textAlign: 'center',
-    marginBottom: 15,
+  },
+  seeReviews: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#00CED1',
+    textDecorationLine: 'underline',
   },
   buttonContainer: {
-    marginTop: 20,
-    marginBottom: 30,
+    marginTop: 15,
+    marginBottom: 10,
+  },
+  homeButton: {
+    backgroundColor: '#007AFF',
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  homeButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 

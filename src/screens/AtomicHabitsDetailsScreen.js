@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, Button, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { supabase } from '../../supabaseConfig';
@@ -36,7 +36,7 @@ const AtomicHabitsDetailsScreen = () => {
 
   return (
     <LinearGradient
-      colors={['#F2AA4CFF', '#101820FF']} // Soft orange to deep purple for contrast
+      colors={['#F2AA4CFF', '#101820FF']}
       start={{ x: 0.5, y: 0 }}
       end={{ x: 0.5, y: 0.7 }}
       style={styles.gradient}
@@ -69,16 +69,22 @@ const AtomicHabitsDetailsScreen = () => {
           • Make habits easy, attractive, and satisfying.
         </Text>
 
-        <Text style={styles.sectionTitle}>⭐ Rating:</Text>
-        {loading ? (
-          <ActivityIndicator size="large" color="#FFD700" />
-        ) : (
-          <Text style={styles.rating}>{averageRating} / 5</Text>
-        )}
+        <View style={styles.ratingRow}>
+          <Text style={styles.sectionTitle}>⭐ Rating:</Text>
+          {loading ? (
+            <ActivityIndicator size="small" color="#FFD700" />
+          ) : (
+            <Text style={styles.rating}>{averageRating} / 5</Text>
+          )}
+          <TouchableOpacity onPress={() => navigation.navigate('BookReviews', { bookName: 'Atomic Habits' })}>
+            <Text style={styles.seeReviews}>See Reviews</Text>
+          </TouchableOpacity>
+        </View>
 
-        {/* Back to Home Button */}
         <View style={styles.buttonContainer}>
-          <Button title="Back to Home" onPress={() => navigation.navigate('Home')} color="#007AFF" />
+          <TouchableOpacity onPress={() => navigation.navigate('Home')} style={styles.homeButton}>
+            <Text style={styles.homeButtonText}>Back to Home</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </LinearGradient>
@@ -90,17 +96,16 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   container: {
-    padding: 20,
+    padding: 15,
   },
   bookCover: {
     width: '100%',
     height: 300,
     resizeMode: 'contain',
-    marginBottom: 15,
-    borderRadius: 10,
+    marginBottom: 10,
   },
   title: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: 'bold',
     color: 'white',
     textAlign: 'center',
@@ -114,41 +119,61 @@ const styles = StyleSheet.create({
   },
   author: {
     fontSize: 18,
-    color: '#ecf0f1',
+    color: '#f5f5f5',
     textAlign: 'center',
   },
   year: {
     fontSize: 16,
-    color: '#ecf0f1',
+    color: '#f5f5f5',
     textAlign: 'center',
   },
   pages: {
     fontSize: 16,
-    color: '#ecf0f1',
+    color: '#f5f5f5',
     textAlign: 'center',
-    marginBottom: 10,
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     color: 'white',
-    marginVertical: 10,
   },
   description: {
     fontSize: 16,
     lineHeight: 22,
-    color: '#ecf0f1',
+    color: '#f5f5f5',
+    marginBottom: 10,
+  },
+  ratingRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginVertical: 10,
   },
   rating: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#FFD700',
-    textAlign: 'center',
-    marginBottom: 15,
+  },
+  seeReviews: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#00CED1',
+    textDecorationLine: 'underline',
   },
   buttonContainer: {
-    marginTop: 20,
-    marginBottom: 30,
+    marginTop: 15,
+    marginBottom: 10,
+  },
+  homeButton: {
+    backgroundColor: '#007AFF',
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  homeButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 

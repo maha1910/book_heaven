@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, Modal, ActivityIndicator } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, Alert, Modal, ActivityIndicator } from 'react-native';
+import { Ionicons,MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { supabase } from '../../supabaseConfig';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 const RecommendBooksScreen = ({ navigation }) => {
   const [bookTitle, setBookTitle] = useState('');
@@ -61,6 +62,7 @@ const RecommendBooksScreen = ({ navigation }) => {
       end={{ x: 0.5, y: 0.7 }}  
       style={styles.gradient}
     >
+      <ScrollView contentContainerStyle={styles.scrollViewContent}>
       <View style={styles.container}>
         <Text style={styles.title}>📖 Recommend a Book</Text>
 
@@ -123,6 +125,38 @@ const RecommendBooksScreen = ({ navigation }) => {
           </View>
         </Modal>
       </View>
+      </ScrollView>
+      <View>
+        {/* FAB - Floating Search Button */}
+        <TouchableOpacity style={styles.fabCenter} onPress={() => navigation.navigate('Search')}>
+          <Ionicons name="search" size={32} color="white" />
+        </TouchableOpacity>
+      </View>
+      {/* Bottom Tab Bar */}
+            <View style={styles.bottomTabBar}>
+              <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('Home')}>
+                <MaterialIcons name="home" size={26} color="#000F" />
+                <Text style={styles.navText}>Home</Text>
+              </TouchableOpacity>
+        
+              <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('AddReview')}>
+                <MaterialIcons name="rate-review" size={26} color="#000" />
+                <Text style={styles.navText}>Review</Text>
+              </TouchableOpacity>
+        
+              {/* Space in middle is left empty for FAB */}
+              <View style={{ width: 65 }} />
+        
+              <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('RecommendBooks')}>
+                <MaterialIcons name="menu-book" size={26} color="#000" />
+                <Text style={styles.navText}>Suggest</Text>
+              </TouchableOpacity>
+        
+              <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('Account')}>
+                <MaterialIcons name="person" size={26} color="#000" />
+                <Text style={styles.navText}>Account</Text>
+              </TouchableOpacity>
+            </View>
     </LinearGradient>
   );
 };
@@ -184,6 +218,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 18,
   },
+  scrollViewContent: { paddingBottom:80},
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -195,6 +230,48 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  bottomTabBar: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    paddingVertical: 10,
+    justifyContent: 'space-around',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    elevation: 10,
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+  },
+  fabCenter: {
+    width: 65,
+    height: 65,
+    borderRadius: 32.5,
+    backgroundColor: '#000',
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    bottom: 20, // makes it overlap the bottom bar
+    left: '50%',
+    marginLeft: -32.5, // half of width
+    elevation: 10, // Android shadow
+    zIndex: 10,
+  
+    // iOS shadow
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+  
+    borderWidth: 4,
+    borderColor: '#fff', // To create a cutout look on the white bottom bar
+  }, 
+  tabItem: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
   },
 });
 

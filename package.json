@@ -12,12 +12,17 @@
   "dependencies": {
     "@expo/metro-runtime": "~4.0.1",
     "@react-native-picker/picker": "^2.11.0",
-    "@react-navigation/bottom-tabs": "^7.3.1",
-    "@react-navigation/native": "^7.0.15",
+    "@react-navigation/bottom-tabs": "^7.3.10",
+    "@react-navigation/native": "^7.1.6",
     "@react-navigation/stack": "^7.1.2",
     "@supabase/supabase-js": "^2.49.1",
+    "emailjs-com": "^3.2.0",
     "expo": "~52.0.35",
+    "expo-dev-client": "~5.0.19",
+    "expo-device": "~7.0.3",
     "expo-linear-gradient": "~14.0.2",
+    "expo-location": "~18.0.8",
+    "expo-notifications": "~0.29.14",
     "expo-splash-screen": "~0.29.22",
     "expo-status-bar": "~2.0.1",
     "react": "18.3.1",
@@ -34,10 +39,7 @@
     "react-native-vector-icons": "^10.2.0",
     "react-native-video": "^6.10.2",
     "react-native-web": "^0.19.13",
-    "react-scripts": "^5.0.1",
-    "expo-location": "~18.0.8",
-    "expo-notifications": "~0.29.14",
-    "expo-dev-client": "~5.0.19"
+    "react-scripts": "^5.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

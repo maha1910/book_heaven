@@ -13,20 +13,27 @@ const LoginScreen = ({ navigation }) => {
   const [showPassword, setShowPassword] = useState(false);
 
   // ✅ Function to track user logins
-  const trackLogin = async (userId, email) => {
+  const trackLogin = async (userId, email, username) => {
     try {
-      const { data, error } = await supabase.from('user_logins').insert([{ user_id: userId, email }]);
+      const { data, error } = await supabase.from('user_logins').insert([
+        {
+          user_id: userId,
+          email,
+          username,
+        },
+      ]);
   
       if (error) {
-        console.error("❌ Failed to track login:", error);  // Log the full error
+        console.error("❌ Failed to track login:", error);
         throw error;
       }
   
-      console.log("✅ Login tracked successfully!", data);
+      console.log("✅ Login tracked successfully!", username);
     } catch (err) {
       console.error("❌ Track Login Error:", err);
     }
   };
+  
   
 
   // ✅ Login function with tracking
@@ -35,23 +42,28 @@ const LoginScreen = ({ navigation }) => {
       Alert.alert('Error', 'Please fill in all fields');
       return;
     }
-
+  
     try {
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-
+  
       if (error) throw error;
       if (!data.user) throw new Error("User not found. Please sign up.");
       if (!data.user.confirmed_at) throw new Error("Please verify your email before logging in.");
-
-      // ✅ Track login event in Supabase
-      await trackLogin(data.user.id, data.user.email);
-
+  
+      const userId = data.user.id;
+      const userEmail = data.user.email;
+      const username = data.user.user_metadata?.username || "unknown";
+  
+      // ✅ Track login event in Supabase with all 3 fields
+      await trackLogin(userId, userEmail, username);
+  
       Alert.alert('Success', 'Logged in successfully!');
       navigation.replace('Home');
     } catch (err) {
       Alert.alert('Login Failed', err.message);
     }
   };
+  
 
   return (
     <LinearGradient colors={['#00C6FF', '#0072FF']} style={styles.container}>
@@ -100,7 +112,7 @@ const LoginScreen = ({ navigation }) => {
 
           {/* Login Button */}
           <TouchableOpacity style={styles.button} onPress={handleLogin}>
-            <Text style={styles.buttonText}>Login</Text>
+            <Text style={styles.buttonText}>Log-in</Text>
           </TouchableOpacity>
 
           {/* Social Media Login */}

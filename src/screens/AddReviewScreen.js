@@ -6,14 +6,16 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
+  ScrollView,
   Animated,
   TextInput,
   Dimensions,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons,MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { supabase } from '../../supabaseConfig';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 const { width, height } = Dimensions.get('window');
 
@@ -119,6 +121,8 @@ const AddReviewScreen = ({ navigation }) => {
       Alert.alert('🚨 Submission Failed!', err.message);
       console.error('❌ Review Submission Error:', err);
     }
+
+    await sendNewReviewEmails(currentUser.email, bookName);
   };
 
   return (
@@ -128,6 +132,7 @@ const AddReviewScreen = ({ navigation }) => {
       end={{ x: 0.5, y: 0.7 }}  
       style={styles.gradient}
     >
+      <ScrollView>
       <Animated.View style={[styles.container, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
         <Text style={styles.title}>Drop Your Thoughts!</Text>
 
@@ -199,6 +204,38 @@ const AddReviewScreen = ({ navigation }) => {
           </Animated.View>
         ))}
       </Animated.View>
+      </ScrollView>
+      <View>
+        {/* FAB - Floating Search Button */}
+        <TouchableOpacity style={styles.fabCenter} onPress={() => navigation.navigate('Search')}>
+          <Ionicons name="search" size={28} color="white" />
+        </TouchableOpacity>
+      </View>
+      {/* Bottom Tab Bar */}
+      <View style={styles.bottomTabBar}>
+        <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('Home')}>
+          <MaterialIcons name="home" size={26} color="#000" />
+          <Text style={styles.navText}>Home</Text>
+        </TouchableOpacity>
+  
+        <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('AddReview')}>
+          <MaterialIcons name="rate-review" size={26} color="#000" />
+          <Text style={styles.navText}>Review</Text>
+        </TouchableOpacity>
+  
+        {/* Space in middle is left empty for FAB */}
+        <View style={{ width: 65 }} />
+  
+        <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('RecommendBooks')}>
+          <MaterialIcons name="menu-book" size={26} color="#000" />
+          <Text style={styles.navText}>Suggest</Text>
+        </TouchableOpacity>
+  
+        <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('Account')}>
+          <MaterialIcons name="person" size={26} color="#000" />
+          <Text style={styles.navText}>Account</Text>
+        </TouchableOpacity>
+      </View>
     </LinearGradient>
   );
 };
@@ -214,6 +251,49 @@ const styles = StyleSheet.create({
   textArea: { borderWidth: 1, borderColor: '#F5F5DC', padding: 12, marginBottom: 20, fontSize: 16, borderRadius: 8, height: 100, backgroundColor: 'rgba(255, 255, 255, 0.2)', color: '#F5F5DC' },
   submitButton: { backgroundColor: 'rgba(134, 158, 96, 0.67)', padding: 15, borderRadius: 8, alignItems: 'center' },
   buttonText: { color: '#F2EDD7FF', fontWeight: 'bold', fontSize: 18 },
+  bottomTabBar: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    paddingVertical: 10,
+    justifyContent: 'space-around',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    elevation: 10,
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+  },
+  
+  tabItem: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
+  },
+  fabCenter: {
+    width: 65,
+    height: 65,
+    borderRadius: 32.5,
+    backgroundColor: '#000',
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    bottom: 20, // makes it overlap the bottom bar
+    left: '50%',
+    marginLeft: -32.5, // half of width
+    elevation: 10, // Android shadow
+    zIndex: 10,
+  
+    // iOS shadow
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+  
+    borderWidth: 4,
+    borderColor: '#fff', // To create a cutout look on the white bottom bar
+  }, 
 });
 
 export default AddReviewScreen;

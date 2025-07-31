@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import Animated, { FadeIn, FadeOut, BounceIn, BounceOut } from 'react-native-reanimated';
 import { LinearGradient } from 'expo-linear-gradient';
+import { supabase } from '../../supabaseConfig';
 
 const SearchScreen = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -12,62 +13,70 @@ const SearchScreen = ({ navigation }) => {
     {
       title: 'Atomic Habits',
       author: 'James Clear',
-      rating: 4.5,
-      description: 'A guide to building good habits and breaking bad ones.',
       screen: 'AtomicHabitsDetails',
     },
     {
       title: 'Under the Same Stars',
       author: 'Jane Harper',
-      rating: 4.2,
-      description: 'A thrilling mystery novel set in the Australian outback.',
       screen: 'UnderTheSameStarsDetails',
     },
     {
       title: 'The Heaven & Earth Grocery Store',
       author: 'James McBride',
-      rating: 4.8,
-      description: 'A deeply moving novel about community and resilience.',
       screen: 'HeavenDetails',
     },
     {
       title: 'Malgudi Days',
       author: 'R.K.Narayan',
-      rating: 4.0,
-      description: 'All set in the fictional town of Malgudi.',
       screen: 'MalgudiDaysDetailsScreen',
     },
     {
       title: 'Learning React',
       author: 'Alex Banks',
-      rating: 5.0,
-      description: 'A comprehensive guide to mastering React development.',
       screen: 'LearningReactDetails',
     },
     {
       title: 'Meadow Brook',
       author: 'Jessica Goodman',
-      rating: '4.5',
-      description: 'A Detector based crime novel',
       screen: 'MeadowbrookMurdersDetails',
     }
   ];
 
-  const handleSearch = (query) => {
+  const fetchBookRating = async (title) => {
+    const { data, error } = await supabase
+      .from('book_reviews')
+      .select('rating')
+      .eq('book_name', title);
+
+    if (error || !data || data.length === 0) return 'No ratings';
+
+    const sum = data.reduce((acc, review) => acc + review.rating, 0);
+    return (sum / data.length).toFixed(1);
+  };
+
+  const handleSearch = async (query) => {
     setSearchQuery(query);
     if (query.trim() === '') {
       setFilteredBooks([]);
     } else {
       setLoading(true);
-      setTimeout(() => {
+      setTimeout(async () => {
         const filtered = books.filter(
           (book) =>
             book.title.toLowerCase().includes(query.toLowerCase()) ||
             book.author.toLowerCase().includes(query.toLowerCase())
         );
-        setFilteredBooks(filtered);
+
+        const booksWithRatings = await Promise.all(
+          filtered.map(async (book) => {
+            const rating = await fetchBookRating(book.title);
+            return { ...book, rating };
+          })
+        );
+
+        setFilteredBooks(booksWithRatings);
         setLoading(false);
-      }, 500);
+      }, 300);
     }
   };
 
