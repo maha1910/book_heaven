@@ -35,7 +35,9 @@
     "react-native-video": "^6.10.2",
     "react-native-web": "^0.19.13",
     "react-scripts": "^5.0.1",
-    "expo-location": "~18.0.8"
+    "expo-location": "~18.0.8",
+    "expo-notifications": "~0.29.14",
+    "expo-dev-client": "~5.0.19"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
